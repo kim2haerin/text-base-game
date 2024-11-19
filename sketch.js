@@ -1,7 +1,14 @@
 // Project Title
 // Your Name
-// Date
 
+document.addEventListener('DOMContentLoaded', function()){
+  let button = document.querySelector('#start-button');
+  let input = document.querySelector('#name-input');
+  button.addEventListener('click'. function()){
+    
+  }
+  l  
+  }
 
 
 function setup() {
@@ -10,5 +17,4 @@ function setup() {
 
 function draw() {
   background(220);
-  circle(mouseX, mouseY, 100);
 }

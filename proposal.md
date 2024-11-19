@@ -11,5 +11,5 @@ drescribe what i want to create
 
 # Nice to have
 
-- musics ans sound effect
+- musics and sound effect
 - have money
