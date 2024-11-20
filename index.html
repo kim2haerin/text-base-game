@@ -24,10 +24,17 @@
   </head>
 
   <body>
-    <h1> Villain to kill</h1>
-    <script src="sketch.js"></script>
-    <label for="name-input">what is your name?</label>
-    <input id="name-input" type="text"></input>
-    <button id="start-button">start game</button>
+    <h1 style="text-align: center", style="font-size: 200px;"> Villain to kill</h1>
+    <!-- <script src="sketch.js"></script> -->
+
+    <button id="myBtn" type ="button">start game</button>
+    <script> 
+      const myBtn = document.getElementById("myBtn");
+    myBtn.addEventListener("click", function(e){
+        const name = prompt("What is your name?");
+        document.body.innerHTML = "<h1>welcome," + name + "!</h1>";
+    });
+    </script>
+
   </body>
 </html>

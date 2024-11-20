@@ -11,3 +11,16 @@ canvas {
   display: block;
   margin-top: 15px;
 }
+h1{
+  font-size: 70px;
+  font-weight: 500;
+  color: aqua;
+  font-family:'Courier New', Courier, monospace;
+  -webkit-text-stroke: 4px #0000ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  text-orientation: upright;
+  writing-mode: vertical-lr;
+}
