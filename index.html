@@ -24,20 +24,28 @@
   </head>
 
   <body>
+    <!--i used https://www.youtube.com/watch?v=Us9MgaPzrWw to make the preload-->
     <div class="blue">
        <span class="percentbar"><h3 class="number">0%</h3></span>
     </div>
     <h2>welcome</h2>
-    <h1 style="text-align: center", style="font-size: 200px;"> Villain to kill</h1>
-    <!-- <script src="sketch.js"></script> -->
+    <!--<h1 style="text-align: center", style="font-size: 200px;"> Villain to kill</h1>-->
+    <script>
+      let i = 0;
+      let h2 = document.querySelector('.h2');
+      let blue = document.querySelector('.blue');
+      let body = document.querySelector('body');
+      let number = document.querySelector('.number');
+      let percentbar = document.querySelector('.percentbar');
 
-    <button id="myBtn" type ="button">start game</button>
-    <script> 
-      const myBtn = document.getElementById("myBtn");
-    myBtn.addEventListener("click", function(e){
-        const name = prompt("What is your name?");
-        document.body.innerHTML = "<h1>welcome," + name + "!</h1>";
-    });
+      let interval  = setInterval(function(){
+        number.innerHTML = i+'<span>%</spant>';
+        percentbar.style.width = i + '%';
+        i++
+        if(i == 101){
+          clearInterval(interval)
+        }
+      }, 100)
     </script>
 
   </body>
