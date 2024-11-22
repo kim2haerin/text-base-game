@@ -6,18 +6,26 @@ drescribe what i want to create
 
 - the story
 - generate NPC
+- interact with the NPC
 - save button
+  - you can save your progress in the game
 - a store to buy things
 - make the quest and side quest
 - get rewards when the quests are complete
 - collect stuffs if you killed a monster like meat, magic stone, etc...
-- background
+- make the start screen background image
+- your choices affect the story
+- make different endings
+- your inventory
+- level up when you beat a ennemy or you cosumme a mana crystal
 
 # Nice to have
 
 - musics and sound effect
 - have money
 - make some spots for fishing
-- make some spot where you can cook
+- make some spot where you can cook food
 - make a gasha machine
--
+- adding drawing of the characters
+- make different place
+ -market, school, gym, the dark market
