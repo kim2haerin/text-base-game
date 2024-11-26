@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Villain to kill</title>
+    <title>adventure game</title>
     <link rel="stylesheet" href="style.css"></link>
 
     <link rel="stylesheet" type="text/css" href="style.css">
@@ -24,35 +24,23 @@
   </head>
 
   <body>
-    <!--i used https://www.youtube.com/watch?v=Us9MgaPzrWw to make the preload-->
-    <div class="blue">
-       <span class="percentbar"><h3 class="number">0%</h3></span>
-    </div>
-    <h2>welcome</h2>
-    <!--<h1 style="text-align: center", style="font-size: 200px;"> Villain to kill</h1>-->
+    <img id="img">
+    <p id="outPut"></p>
+    <input type="text">
+    <button>enter</button>
     <script>
-      let i = 0;
-      let h2 = document.querySelector('h2');
-      let blue = document.querySelector('.blue');
-      let body = document.querySelector('body');
-      let number = document.querySelector('.number');
-      let percentbar = document.querySelector('.percentbar');
+    let map = [];
+    map[0] = "entrance"
+    map[1] = "first room"
+    map[2] = "second room"
+    map[3] = "third room"
+    map[4] = "fourth room"
+    map[5] = "last room"
+    let mapLocation = 0;
 
-      let interval  = setInterval(function(){
-        number.innerHTML = i+'<span>%</spant>';
-        percentbar.style.width = i + '%';
-        i++
-        if(i == 101){
-          clearInterval(interval)
-          setTimeout(function(){
-            blue.style.opacity = '0';
-            blue.style.visibility = 'hidden';
-            body.style.background = '#6948ff';
-            h2.style.opacity = '1';
-            h2.style.visibility = 'visible';
-          })
-        }
-      }, 100)
+    let outPut = document.querySelector("outPut");
+
+    outPut.innerHTML = map[mapLocation];
     </script>
   </body>
 </html>

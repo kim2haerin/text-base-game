@@ -17,7 +17,9 @@ drescribe what i want to create
 - your choices affect the story
 - make different endings
 - your inventory
-- level up when you beat a ennemy or you cosumme a mana crystal
+- level up when you beat a ennemy or you cosume a mana crystal
+- button to press in battle
+ - you can flee, attack, etc...
 
 # Nice to have
 
@@ -26,6 +28,4 @@ drescribe what i want to create
 - make some spots for fishing
 - make some spot where you can cook food
 - make a gasha machine
-- adding drawing of the characters
-- make different place
- -market, school, gym, the dark market
+- make a map
