@@ -24,7 +24,7 @@ drescribe what i want to create
 # Nice to have
 
 - musics and sound effect
-- have money
+- be able to earn money in the game
 - make some spots for fishing
 - make some spot where you can cook food
 - make a gasha machine

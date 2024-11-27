@@ -21,13 +21,21 @@
     <!-- <script src="libraries/p5.min.js"></script> -->
 
     <script src="libraries/p5.sound.min.js"></script>
+
+    <script src="sketch.js"></script>
   </head>
 
   <body>
-    <img id="img">
-    <p id="outPut"></p>
-    <input type="text">
-    <button>enter</button>
+    <div id="game">
+      <h1>Text-Based RPG</h1>
+      <div id="menu">
+          <button onclick="startGame()">Start Game</button>
+          <button onclick="loadGame()">Load Game</button>
+      </div>
+      <div id="story"></div>
+      <div id="output"></div>
+      <div id="inventory"></div>
+  </div>
     <script>
     let map = [];
     map[0] = "entrance"
@@ -41,6 +49,8 @@
     let outPut = document.querySelector("outPut");
 
     outPut.innerHTML = map[mapLocation];
+
+
     </script>
   </body>
 </html>
