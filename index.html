@@ -27,15 +27,17 @@
 
   <body>
     <div id="game">
-      <h1>Text-Based RPG</h1>
+      <h1>your adventure game</h1>
       <div id="menu">
           <button onclick="startGame()">Start Game</button>
           <button onclick="loadGame()">Load Game</button>
-      </div>
-      <div id="story"></div>
-      <div id="output"></div>
-      <div id="inventory"></div>
-  </div>
+        </div>
+        <div id="story" style="display: none;"></div>
+        <div id="output"></div>
+        <div id="inventory" style="display: none;">
+            <h2>Inventory</h2>
+            <ul id="inventoryList"></ul>
+        </div>
     <script>
     let map = [];
     map[0] = "entrance"

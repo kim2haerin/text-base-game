@@ -1,0 +1,46 @@
+/* General Styling */
+body {
+    font-family: 'Cinzel', serif;
+    background: url('image/rpg.avif') no-repeat center center fixed;
+    background-size: cover;
+    color: #ffffff;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+#game {
+    margin: 20px auto;
+    padding: 20px;
+    width: 80%;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 10px;
+}
+
+/* Buttons */
+button {
+    margin: 10px;
+    padding: 15px 30px;
+    font-size: 18px;
+    color: #ffffff;
+    text-shadow: 1px 1px 2px #000;
+    background: linear-gradient(to bottom, #6a11cb, #2575fc);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+}
+
+button:hover {
+    background: linear-gradient(to bottom, #2575fc, #6a11cb);
+    transform: scale(1.1);
+}
+
+/* Output Areas */
+#story, #output, #inventory {
+    margin: 20px auto;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: #f0f0f0;
+}

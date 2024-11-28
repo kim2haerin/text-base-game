@@ -5,14 +5,15 @@ let  gameOver = false;
 let playerHealth = 100;
 let PlayerInventory = [];
 let playerLevel = 1;
+let img;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
 }
 
-function draw() {
-  background(220);
-}
+//function draw() {
+// background(220);
+//}
 
 function startGame(){
   console.log("welcome to adventure game!");
