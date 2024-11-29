@@ -7,6 +7,8 @@ let PlayerInventory = [];
 let playerLevel = 1;
 let img;
 
+const textElement = document.getElementById("text");
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
 }
