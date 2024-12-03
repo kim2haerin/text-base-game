@@ -13,7 +13,7 @@ drescribe what i want to create
 - make the quest and side quest
 - get rewards when the quests are complete
 - collect stuffs if you killed a monster like meat, magic stone, etc...
-- make the start screen background image
+- make the start screen background image 
 - your choices affect the story
 - make different endings
 - your inventory
