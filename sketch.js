@@ -48,25 +48,30 @@ let storyText = "";
 let userInput = {}; 
 
 
-const textElement = document.getElementById("text");
+const textElement = document.getElementById("storyText");
+const gameLog = document.getElementById('game-log');
+//const userInput = document.getElementById('user-input');
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  
+  let theTextElement = select("storyText"); // not working
+  storyText="you find yourself in front a dark cave. Do you wanna go in?(Yes/No)";
+  theTextElement.html(storyText);
+
 }
 
 function draw() {
-  //background(0);
   textSize(16);
   textAlign(LEFT);
   fill("white");
-  text(storyText, 50, 150, width - 100);
-  startGame();
+  text(storyText, 50, 150, width - 100); 
+  console.log(textElement);
 }
 
 function startGame(){
   userInput = {};
   storyText="you find yourself in front a dark cave. Do you wanna go in?(Yes/No)";
+  // textElement.html(storyText);
 
   let choice = prompt("Do you wanna go in?(Yes/No)");
 
@@ -81,7 +86,9 @@ function startGame(){
 }
 
 function enterCave(){
+  // let theTextElement = select("text");
   storyText = "you are now inside the cave and you hear a strange noise. there are two path in front of you. which way to go?(Left/Right)";
+  // theTextElement.html(storyText);
   let choice = prompt("which way to go?(Left/Right)");
 
   if(choice.toLowerCase() === "right"){
@@ -95,3 +102,6 @@ function enterCave(){
 function RightPath(){
   storyText = "you take the right path and on your way you find a small knife";
 }
+
+
+
