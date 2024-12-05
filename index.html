@@ -1,61 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
+<head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text-Based RPG Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <div id="game-log">
+            <p id="log">Welcome to the RPG!</p>
+        </div>
 
-    <title>adventure game</title>
-    <link rel="stylesheet" href="style.css"></link>
-
-    <link rel="stylesheet" type="text/css" href="style.css">
-
-    <!-- Linking to the main p5.js library, which allows your code to use all 
-       p5 functions. Using this version while developing your code allows p5 
-       to provide more Friendly Error Messages if you mess something up...-->
-    <script src="libraries/p5.js"></script>
-
-    <!-- Once your project is working completely, you can comment out the link
-       to p5.js above, and instead link to this minified version. The minified
-       version takes less space, and turns off Friendly Error Messages. This 
-       increases the speed of your program quite dramatically in some cases.-->
-    <!-- <script src="libraries/p5.min.js"></script> -->
-
-    <script src="libraries/p5.sound.min.js"></script>
+        <!-- Action Buttons (initially hidden) -->
+        <div id="button-container">
+            <button id="start-button" onclick="startGame()">Start Game</button>
+            <button id="quest-button" onclick="startQuest()" class="hidden">Start Quest</button>
+            <button id="save-button" onclick="saveGame()" class="hidden">Save Game</button>
+            <button id="load-button" onclick="loadGame()" class="hidden">Load Game</button>
+            <button id="achievements-button" onclick="showAchievements()" class="hidden">Show Achievements</button>
+            <button id="attack-button" onclick="attackEnemy()" class="hidden">Attack</button>
+            <button id="yes-button" onclick="handleQuestResponse('yes')" class="hidden">Yes</button>
+            <button id="no-button" onclick="handleQuestResponse('no')" class="hidden">No</button>
+        </div>
+    </div>
 
     <script src="sketch.js"></script>
-  </head>
-
-  <body>
-    <div id="game">
-      <h1>welcome to your adventure game</h1>
-      <div id="menu">
-          <button onclick="startGame()">Start Game</button>
-          <button onclick="loadGame()">Load Game</button>
-        </div>
-        <div id="story" style="display: none;"></div>
-        <div id="output"></div>
-        <div id="inventory" style="display: none;">
-            <h2>Inventory</h2>
-            <ul id="inventoryList"></ul>
-        </div>
-        <div class="container">
-          <div id="storyText">story text</div>
-        </div>
-    <script>
-    let map = [];
-    map[0] = "entrance"
-    map[1] = "first room"
-    map[2] = "second room"
-    map[3] = "third room"
-    map[4] = "fourth room"
-    map[5] = "last room"
-    let mapLocation = 0;
-
-    let outPut = document.querySelector("outPut");
-
-    //outPut.innerHTML = map[mapLocation];
-
-
-    </script>
-  </body>
+</body>
 </html>

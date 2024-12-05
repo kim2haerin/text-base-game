@@ -1,6 +1,3 @@
-// Project Title
-// Your Name
-
 // Game State Variables
 let gameState = {
   player: {
@@ -43,65 +40,103 @@ let gameState = {
     questMaster: { description: 'Complete 3 quests.', progress: 0, goal: 3, reward: 100 },
   },
 };
-let img;
-let storyText = ""; 
-let userInput = {}; 
 
+// Functions for Game Actions
+const logMessage = (message) => {
+  document.getElementById('log').innerHTML += `<br>${message}`;
+  document.getElementById('log').scrollTop = document.getElementById('log').scrollHeight; // Auto-scroll
+};
 
-const textElement = document.getElementById("storyText");
-const gameLog = document.getElementById('game-log');
-//const userInput = document.getElementById('user-input');
+const updateHealthBar = () => {
+  document.getElementById('log').innerHTML += `<br>Health: ${gameState.player.hp}/${gameState.player.maxHp}`;
+};
 
-function setup() {
-  createCanvas(windowWidth, windowHeight);
-  let theTextElement = select("storyText"); // not working
-  storyText="you find yourself in front a dark cave. Do you wanna go in?(Yes/No)";
-  theTextElement.html(storyText);
-
+function startGame() {
+  logMessage('Welcome to the RPG! Choose an action to begin.');
+  showButton('quest-button');
+  showButton('save-button');
+  showButton('load-button');
 }
 
-function draw() {
-  textSize(16);
-  textAlign(LEFT);
-  fill("white");
-  text(storyText, 50, 150, width - 100); 
-  console.log(textElement);
+function showButton(buttonId) {
+  document.getElementById(buttonId).classList.remove('hidden');
 }
 
-function startGame(){
-  userInput = {};
-  storyText="you find yourself in front a dark cave. Do you wanna go in?(Yes/No)";
-  // textElement.html(storyText);
+function hideButton(buttonId) {
+  document.getElementById(buttonId).classList.add('hidden');
+}
 
-  let choice = prompt("Do you wanna go in?(Yes/No)");
-
-  if (choice.toLowerCase() === "yes"){
-    enterCave();
+function startQuest() {
+  if (gameState.quests.main.active) {
+    logMessage('You are already on a quest!');
+    return;
   }
-  else{
-    storyText = "maybe next time";
-    gameOver = true;
-    storyText.cut();
+
+  logMessage('A villager approaches you with a task: "Please help us! A monster has been terrorizing our town. Will you help?"');
+  showButton('yes-button');
+  showButton('no-button');
+  gameState.storyProgress.waitingForResponse = true;
+}
+
+function handleQuestResponse(response) {
+  if (!gameState.storyProgress.waitingForResponse) {
+    return;
+  }
+
+  if (response === 'yes') {
+    logMessage('Villager: "Thank you, brave hero! The monster is in the Forest."');
+    gameState.quests.main.active = true;
+    gameState.storyProgress.waitingForResponse = false;
+    hideButton('yes-button');
+    hideButton('no-button');
+  }
+  else if (response === 'no') {
+    logMessage('Villager: "I understand. Please reconsider if you can."');
+    gameState.storyProgress.waitingForResponse = false;
+    hideButton('yes-button');
+    hideButton('no-button');
+  }
+  else {
+    logMessage('Villager: "Please answer yes or no."');
   }
 }
 
-function enterCave(){
-  // let theTextElement = select("text");
-  storyText = "you are now inside the cave and you hear a strange noise. there are two path in front of you. which way to go?(Left/Right)";
-  // theTextElement.html(storyText);
-  let choice = prompt("which way to go?(Left/Right)");
+function saveGame() {
+  localStorage.setItem('gameState', JSON.stringify(gameState));
+  logMessage('Game Saved!');
+}
 
-  if(choice.toLowerCase() === "right"){
-    rightPath();
+function loadGame() {
+  const savedGame = localStorage.getItem('gameState');
+  if (savedGame) {
+    gameState = JSON.parse(savedGame);
+    logMessage('Game Loaded!');
+    updateHealthBar();
   }
-  else if(choice.toLowerCase()==="left"){
-    leftPath();
+  else {
+    logMessage('No saved game found.');
   }
 }
 
-function RightPath(){
-  storyText = "you take the right path and on your way you find a small knife";
+function showAchievements() {
+  for (const [key, achievement] of Object.entries(gameState.achievements)) {
+    logMessage(`${achievement.description} (${achievement.progress}/${achievement.goal})`);
+  }
 }
 
+// Combat Functions
+function attackEnemy() {
+  logMessage('You attack the enemy!');
+  // Add enemy interaction here
+}
 
+// Store Functionality
+function openStore() {
+  logMessage('Welcome to the store! What would you like to buy?');
+  for (let item in gameState.storeItems) {
+    logMessage(`${item}: ${gameState.storeItems[item].price} gold`);
+  }
+}
 
+// Start the game
+startGame();
