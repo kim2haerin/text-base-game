@@ -5,13 +5,14 @@ drescribe what i want to create
 # Need to have
 
 - the story
-- generate NPC
+- generate random NPC
 - save button
 - a store to buy things
 - make the quest and side quest
 - get rewards when the quests are complete
 - collect stuffs if you killed a monster like meat, magic stone, etc...
 - background
+- a multi choice game
 
 # Nice to have
 
@@ -20,4 +21,5 @@ drescribe what i want to create
 - make some spots for fishing
 - make some spot where you can cook
 - make a gasha machine
--
+  - it like a lottery machine
+- you need to have gasha tickets to pull the gasha machine
