@@ -9,7 +9,6 @@ body {
     padding: 0;
 }
 
-
 #game {
     margin: 20px auto;
     padding: 20px;
@@ -30,31 +29,11 @@ button {
     border-radius: 5px;
     cursor: pointer;
     transition: background 0.3s, transform 0.2s;
-    border: 1px solid hsl(46, 81%, 41%);
 }
 
 button:hover {
     background: linear-gradient(to bottom, #2575fc, #6a11cb);
     transform: scale(1.1);
-    border: 1px solid hsl(46, 81%, 41%);
-}
-.btn-grid{
-    display: grid;
-    grid-template-columns: repeat(2, auto);
-    gap: 10px;
-    margin-top: 20px;
-}
-.btn{
-    background-color: hsl(231, 81%, 41%);
-    border:1px solid hsl(46, 81%, 41%);
-    border-radius: 5px;
-    padding: 5px 10px;
-    color: aliceblue;
-    outline: none;
-}
-.btn:hover{
-    border-color: #222;
-    
 }
 
 /* Output Areas */
