@@ -4,7 +4,7 @@ let gameState = {
     name: "Hero",
     hp: 100,
     maxHp: 100,
-    gold: 50,
+    gold: 0,
     level: 1,
     xp: 0,
     skills: {
@@ -25,17 +25,18 @@ let gameState = {
 let storyTextElement, gameLog, playerHpElement;
 
 // Setup Function
-function setup() {
-  noCanvas();
-
-  // Connect HTML elements
+document.addEventListener("DOMContentLoaded", () => {
   storyTextElement = document.getElementById("storyText");
   gameLog = document.getElementById("output");
   playerHpElement = document.getElementById("playerHp");
 
-  // Start the game
-  startGame();
-}
+  const startButton = document.getElementById("startButton");
+  startButton.addEventListener("click", () => {
+    startButton.style.display = "none"; // Hide Start Button
+    document.getElementById("storyContainer").style.display = "block"; // Show Story Container
+    startGame();
+  });
+});
 
 // Start the Game
 function startGame() {
@@ -72,7 +73,7 @@ function StoryText(text, callback) {
 
 // Enter the Cave
 function enterCave() {
-  StoryText("You enter the cave and hear strange noises. Ahead are two paths. Which way will you go?", () => {
+  StoryText("Ahead are two paths. Which way will you go?", () => {
     addChoiceButtons(["Left", "Right"], (choice) => {
       if (choice === "Left") {
         leftPath();
@@ -89,6 +90,7 @@ function leftPath() {
   StoryText("You venture down the left path and find a treasure chest! Inside, you find 50 gold!", () => {
     gameState.player.gold += 50;
     GameLog("You earned 50 gold!");
+    continueOn();
   });
 }
 
@@ -96,11 +98,28 @@ function leftPath() {
 function rightPath() {
   StoryText("A goblin ambushes you! Prepare for battle!", () => {
     startBattle(gameState.enemies.goblin, () => {
-      StoryText("You defeated the goblin and found 20 gold!");
+      StoryText(" GOOD JOB! You defeated the goblin and found 20 gold!");
       gameState.player.gold += 20;
       GameLog("You earned 20 gold!");
+      addChoiceButtons(["Next"], (choice) => {
+        if (choice === "Next") {
+          continueOn();
+        }
     });
   });
+}
+
+function continueOn(){
+  StoryText("you continue on and find some random merchan, do you want to see his stuffs?");
+  addChoiceButtons(["Yes"], (choice) => {
+    if (choice === "Yes") {
+      merchant1();
+    }
+  });
+}
+
+function merchan1(){
+  StoryText("Merchhant: hello der adventure, i have a lot of stuff here, wanna take a look?");
 }
 
 // Battle System
@@ -115,8 +134,7 @@ function startBattle(enemy, onVictory) {
     enemy.hp -= playerDamage;
     gameState.player.hp -= enemyDamage;
 
-    //battleLog = `You dealt ${playerDamage} damage. The enemy dealt ${enemyDamage} damage.`;
-    battleLog = "You dealt" + playerDamage + "damage. The enemy dealt" + enemyDamage + "damage.";
+    battleLog = `You dealt ${playerDamage} damage. The enemy dealt ${enemyDamage} damage.`;
     GameLog(battleLog);
 
     updatePlayerStats();
@@ -137,7 +155,6 @@ function startBattle(enemy, onVictory) {
 // Update Player Stats
 function updatePlayerStats() {
   playerHpElement.textContent = `HP: ${gameState.player.hp}/${gameState.player.maxHp}`;
-  //playerHpElement.textContent = "HP:" +  gameState.player.hp + gameState.player.maxHp;
 }
 
 // Log Game Events
