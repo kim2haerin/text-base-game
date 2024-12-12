@@ -4,9 +4,9 @@ let gameState = {
     name: "Hero",
     hp: 100,
     maxHp: 100,
-    gold: 50,
+    gold: 0,
     level: 1,
-    xp: 0,
+    xp: 100,
     skills: {
       strength: 1,
       agility: 1,
@@ -49,7 +49,8 @@ function startGame() {
     addChoiceButtons(["Yes", "No"], (choice) => {
       if (choice === "Yes") {
         enterCave();
-      } else {
+      }
+      else {
         StoryText("Maybe next time then. The adventure ends here.");
       }
     });
@@ -65,9 +66,12 @@ function StoryText(text, callback) {
     if (i < text.length) {
       storyTextElement.innerHTML += text.charAt(i);
       i++;
-    } else {
+    }
+    else {
       clearInterval(interval);
-      if (callback) callback(); // Execute callback after text is fully displayed
+      if (callback) {
+        callback();
+      } // Execute callback after text is fully displayed
     }
   }, 50); // Adjust the speed of text reveal
 }
@@ -78,10 +82,10 @@ function enterCave() {
     addChoiceButtons(["Left", "Right"], (choice) => {
       if (choice === "Left") {
         leftPath();
-      } else {
+      }
+      else {
         rightPath();
       }
-      meetMerchant(); // Trigger Merchant Encounter
     });
   });
 }
@@ -92,6 +96,7 @@ function leftPath() {
     gameState.player.gold += 50;
     GameLog("You earned 50 gold!");
     PlayerStats();
+    meetMerchant(); // Trigger Merchant Encounter
   });
 }
 
@@ -104,6 +109,7 @@ function rightPath() {
       GameLog("You earned 20 gold!");
       PlayerStats();
     });
+    meetMerchant(); // Trigger Merchant Encounter
   });
 }
 
@@ -151,7 +157,8 @@ function purchaseItem(item) {
 
     GameLog(`You bought ${item.name}. ${item.description}`);
     PlayerStats();
-  } else {
+  }
+  else {
     GameLog(`You don't have enough gold to buy ${item.name}.`);
   }
 }
