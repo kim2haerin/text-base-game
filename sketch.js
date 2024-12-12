@@ -4,7 +4,7 @@ let gameState = {
     name: "Hero",
     hp: 100,
     maxHp: 100,
-    gold: 0,
+    gold: 50,
     level: 1,
     xp: 0,
     skills: {
@@ -21,22 +21,27 @@ let gameState = {
   },
 };
 
+// Merchant's Items
+const merchantItems = [
+  { name: "Health Potion", price: 20, effect: { hp: 20 }, description: "Restores 20 HP." },
+  { name: "Sword", price: 50, effect: { weapon: "Sword" }, description: "A basic sword to deal more damage." },
+  { name: "Food", price: 10, effect: { hp: 10 }, description: "Restores 10 HP." },
+  { name: "Shield", price: 40, effect: { armor: "Shield" }, description: "Provides better defense." },
+  { name: "Magic Potion", price: 100, effect: { xp: 50 }, description: "Grants 50 XP." },
+];
+
 // HTML Elements
 let storyTextElement, gameLog, playerHpElement;
 
 // Setup Function
-document.addEventListener("DOMContentLoaded", () => {
+function setup() {
+  noCanvas();
+
+  // Connect HTML elements
   storyTextElement = document.getElementById("storyText");
   gameLog = document.getElementById("output");
   playerHpElement = document.getElementById("playerHp");
-
-  const startButton = document.getElementById("startButton");
-  startButton.addEventListener("click", () => {
-    startButton.style.display = "none"; // Hide Start Button
-    document.getElementById("storyContainer").style.display = "block"; // Show Story Container
-    startGame();
-  });
-});
+}
 
 // Start the Game
 function startGame() {
@@ -44,15 +49,14 @@ function startGame() {
     addChoiceButtons(["Yes", "No"], (choice) => {
       if (choice === "Yes") {
         enterCave();
-      }
-      else {
+      } else {
         StoryText("Maybe next time then. The adventure ends here.");
       }
     });
   });
 }
 
-// Update Story Text with a Typewriter Effect
+// Story Text with a Typewriter Effect
 function StoryText(text, callback) {
   storyTextElement.innerHTML = ""; // Clear previous text
   let i = 0;
@@ -61,26 +65,23 @@ function StoryText(text, callback) {
     if (i < text.length) {
       storyTextElement.innerHTML += text.charAt(i);
       i++;
-    }
-    else {
+    } else {
       clearInterval(interval);
-      if (callback) {
-        callback();
-      } // Execute callback after text is fully displayed
+      if (callback) callback(); // Execute callback after text is fully displayed
     }
   }, 50); // Adjust the speed of text reveal
 }
 
 // Enter the Cave
 function enterCave() {
-  StoryText("Ahead are two paths. Which way will you go?", () => {
+  StoryText("You enter the cave and hear strange noises. Ahead are two paths. Which way will you go?", () => {
     addChoiceButtons(["Left", "Right"], (choice) => {
       if (choice === "Left") {
         leftPath();
-      }
-      else {
+      } else {
         rightPath();
       }
+      meetMerchant(); // Trigger Merchant Encounter
     });
   });
 }
@@ -90,7 +91,7 @@ function leftPath() {
   StoryText("You venture down the left path and find a treasure chest! Inside, you find 50 gold!", () => {
     gameState.player.gold += 50;
     GameLog("You earned 50 gold!");
-    continueOn();
+    PlayerStats();
   });
 }
 
@@ -98,33 +99,66 @@ function leftPath() {
 function rightPath() {
   StoryText("A goblin ambushes you! Prepare for battle!", () => {
     startBattle(gameState.enemies.goblin, () => {
-      StoryText(" GOOD JOB! You defeated the goblin and found 20 gold!");
+      StoryText("You defeated the goblin and found 20 gold!");
       gameState.player.gold += 20;
       GameLog("You earned 20 gold!");
-      addChoiceButtons(["Next"], (choice) => {
-        if (choice === "Next") {
-          continueOn();
-        }
+      PlayerStats();
     });
   });
 }
 
-function continueOn(){
-  StoryText("you continue on and find some random merchan, do you want to see his stuffs?");
-  addChoiceButtons(["Yes"], (choice) => {
-    if (choice === "Yes") {
-      merchant1();
-    }
+// Meet the Merchant
+function meetMerchant() {
+  StoryText("You meet a friendly merchant. He offers you items for sale. What would you like to buy?", () => {
+    displayMerchantItems();
   });
 }
 
-function merchan1(){
-  StoryText("Merchhant: hello der adventure, i have a lot of stuff here, wanna take a look?");
+// Display Merchant's Items
+function displayMerchantItems() {
+  storyTextElement.innerHTML += "<br><br><strong>Items for Sale:</strong><br>";
+  merchantItems.forEach((item) => {
+    let button = document.createElement("button");
+    button.textContent = `${item.name} - ${item.price} gold`;
+    button.onclick = () => purchaseItem(item);
+    storyTextElement.appendChild(button);
+  });
+
+  // Option to Leave the Shop
+  let leaveButton = document.createElement("button");
+  leaveButton.textContent = "Leave";
+  leaveButton.onclick = () => {
+    StoryText("You thank the merchant and continue your journey.");
+  };
+  storyTextElement.appendChild(leaveButton);
 }
 
-// Battle System
+// Purchase Item Logic
+function purchaseItem(item) {
+  if (gameState.player.gold >= item.price) {
+    gameState.player.gold -= item.price;
+
+    // Apply Item Effect
+    if (item.effect.hp) {
+      gameState.player.hp = Math.min(gameState.player.hp + item.effect.hp, gameState.player.maxHp);
+    }
+    if (item.effect.weapon) {
+      gameState.player.weapon = item.effect.weapon;
+    }
+    if (item.effect.xp) {
+      gameState.player.xp += item.effect.xp;
+    }
+
+    GameLog(`You bought ${item.name}. ${item.description}`);
+    PlayerStats();
+  } else {
+    GameLog(`You don't have enough gold to buy ${item.name}.`);
+  }
+}
+
+// Start Battle
 function startBattle(enemy, onVictory) {
-  updatePlayerStats();
+  PlayerStats();
   let battleLog = "";
 
   const battleInterval = setInterval(() => {
@@ -137,7 +171,7 @@ function startBattle(enemy, onVictory) {
     battleLog = `You dealt ${playerDamage} damage. The enemy dealt ${enemyDamage} damage.`;
     GameLog(battleLog);
 
-    updatePlayerStats();
+    PlayerStats();
 
     if (enemy.hp <= 0) {
       clearInterval(battleInterval);
@@ -152,9 +186,11 @@ function startBattle(enemy, onVictory) {
   }, 1000);
 }
 
-// Update Player Stats
-function updatePlayerStats() {
+// Player Stats
+function PlayerStats() {
   playerHpElement.textContent = `HP: ${gameState.player.hp}/${gameState.player.maxHp}`;
+  document.getElementById("playerGold").textContent = `Gold: ${gameState.player.gold}`;
+  document.getElementById("playerXp").textContent = `XP: ${gameState.player.xp}`;
 }
 
 // Log Game Events
