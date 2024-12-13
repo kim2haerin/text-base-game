@@ -104,13 +104,14 @@ function leftPath() {
 function rightPath() {
   StoryText("A goblin ambushes you! Prepare for battle!", () => {
     startBattle(gameState.enemies.goblin, () => {
-      StoryText("You defeated the goblin and found 20 gold!");
+      StoryText("You defeated the goblin and found 20 gold! continue on ahead");
       gameState.player.gold += 20;
       GameLog("You earned 20 gold!");
       PlayerStats();
     });
-    meetMerchant(); // Trigger Merchant Encounter
+    //meetMerchant(); // Trigger Merchant Encounter
   });
+  meetMerchant(); // Trigger Merchant Encounter
 }
 
 // Meet the Merchant
@@ -259,9 +260,12 @@ function loadGame() {
     gameState.player.inventory = saveData.inventory || [];
     GameLog("Game loaded successfully!");
     PlayerStats(); // Update the stats on the screen
-  } else {
+  } 
+  else {
     GameLog("No save data found!");
   }
 }
+
+function questLog(){}
 
 

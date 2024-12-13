@@ -13,17 +13,17 @@
     <h1> The Caverns of Fate</h1>
     <div id="menu">
       <button onclick="startGame()">Start New Game</button>
-      <button onclick="loadGame()">Load Game</button>
       <button onclick="saveGame()"> Save Game</button>
     </div>
     <div id="playerStats">
-      <span id="playerHp">HP: 100/100</span>
       <p></p>
-      <span id="playerGold">Gold: 0</span>
+      <span id="playerLevel">level: 1</span>
+      <p></p>
+      <span id="playerHp">HP: 100/100</span>
       <p></p>
       <span id="playerXp">XP: 50</span>
       <p></p>
-      <span id="playerLevel">level: 1</span>
+      <span id="playerGold">Gold: 0</span>
     </div>
     <div id="inventory">
       <h3>Inventory:</h3>
@@ -33,6 +33,8 @@
       <p></p>
       press new game to start.</div>
     <div id="output"></div>
+    <button onclick="loadGame()">Load Game</button>
+    <button onclick="questLog()">Quest log</button>
   </div>
 </body>
 </html>
