@@ -51,7 +51,7 @@ function startGame() {
         enterCave();
       }
       else {
-        StoryText("Maybe next time then. The adventure ends here.");
+        StoryText("What a shame. Your adventure ends here.");
       }
     });
   });
@@ -218,3 +218,50 @@ function addChoiceButtons(choices, callback) {
     storyTextElement.appendChild(button);
   });
 }
+
+function resetGame() {
+  localStorage.removeItem("adventureGameSave");
+  gameState.player = {
+    name: "Hero",
+    hp: 100,
+    maxHp: 100,
+    gold: 0,
+    level: 1,
+    xp: 0,
+    skills: {
+      strength: 1,
+      agility: 1,
+      intelligence: 1,
+      points: 0,
+    },
+    inventory: [],
+    weapon: "Fists",
+  };
+  GameLog("New game started. Previous save cleared.");
+  PlayerStats();
+}
+
+function saveGame() {
+  const saveData = {
+    player: gameState.player,
+    inventory: gameState.player.inventory,
+  };
+
+  localStorage.setItem("adventureGameSave", JSON.stringify(saveData));
+  GameLog("Game saved successfully!");
+}
+
+function loadGame() {
+  const saveData = JSON.parse(localStorage.getItem("adventureGameSave"));
+
+  if (saveData) {
+    gameState.player = saveData.player;
+    gameState.player.inventory = saveData.inventory || [];
+    GameLog("Game loaded successfully!");
+    PlayerStats(); // Update the stats on the screen
+  } else {
+    GameLog("No save data found!");
+  }
+}
+
+
