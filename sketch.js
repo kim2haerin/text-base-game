@@ -41,6 +41,7 @@ function setup() {
   storyTextElement = document.getElementById("storyText");
   gameLog = document.getElementById("output");
   playerHpElement = document.getElementById("playerHp");
+  quests= document.getElementById("Quests");
 }
 
 // Start the Game
@@ -106,12 +107,12 @@ function rightPath() {
     startBattle(gameState.enemies.goblin, () => {
       StoryText("You defeated the goblin and found 20 gold! continue on ahead");
       gameState.player.gold += 20;
+      //meetMerchant(); // Trigger Merchant Encounter
       GameLog("You earned 20 gold!");
       PlayerStats();
     });
-    //meetMerchant(); // Trigger Merchant Encounter
   });
-  meetMerchant(); // Trigger Merchant Encounter
+  //meetMerchant(); // Trigger Merchant Encounter
 }
 
 // Meet the Merchant
@@ -266,6 +267,11 @@ function loadGame() {
   }
 }
 
-function questLog(){}
+function questLog(){
+  GameLog(quest1("buy something from the mercant"));
+  GameLog("help the little boy");
+  GameLog("reach level 5");
+  GameLog("try to have 100 Gold");
+}
 
 
