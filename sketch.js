@@ -41,7 +41,7 @@ function setup() {
   storyTextElement = document.getElementById("storyText");
   gameLog = document.getElementById("output");
   playerHpElement = document.getElementById("playerHp");
-  quests= document.getElementById("Quests");
+  quest= document.getElementById("Quests");
 }
 
 // Start the Game
@@ -52,11 +52,17 @@ function startGame() {
         enterCave();
       }
       else {
-        StoryText("What a shame. Your adventure ends here.");
+        StoryText("Maybe next time then. The adventure ends here.");
       }
     });
   });
+
+  renderQuestLog();  // Render the initial quest log
 }
+
+
+
+
 
 // Story Text with a Typewriter Effect
 function StoryText(text, callback) {
@@ -105,22 +111,26 @@ function leftPath() {
 function rightPath() {
   StoryText("A goblin ambushes you! Prepare for battle!", () => {
     startBattle(gameState.enemies.goblin, () => {
-      StoryText("You defeated the goblin and found 20 gold! continue on ahead");
+      StoryText("You defeated the goblin and found 20 gold!");
       gameState.player.gold += 20;
-      //meetMerchant(); // Trigger Merchant Encounter
       GameLog("You earned 20 gold!");
       PlayerStats();
+      
+      completeQuest(1); // Mark the "Defeat the Goblin" quest as complete
     });
+    meetMerchant();
   });
-  //meetMerchant(); // Trigger Merchant Encounter
 }
 
 // Meet the Merchant
 function meetMerchant() {
   StoryText("You meet a friendly merchant. He offers you items for sale. What would you like to buy?", () => {
     displayMerchantItems();
+    completeQuest(3); // Complete "Meet the Merchant" quest
   });
-}
+};
+
+
 
 // Display Merchant's Items
 function displayMerchantItems() {
@@ -201,6 +211,13 @@ function PlayerStats() {
   document.getElementById("playerGold").textContent = `Gold: ${gameState.player.gold}`;
   document.getElementById("playerXp").textContent = `XP: ${gameState.player.xp}`;
 }
+// the quest list
+gameState.quest = [
+  {id : 1, name: "meet the merchant", complete: false, reward:{gold: 10}},
+  {id:2, name:"try to reach level 5", complete: false, reward:{gold: 20}},
+  {id:3, name:"try to collect 100 Gold", complete:false, reward:"magic potion"},
+  {id : 4, name: "save emporio", complete:false, reward:"food"},
+];
 
 // Log Game Events
 function GameLog(message) {
@@ -268,10 +285,42 @@ function loadGame() {
 }
 
 function questLog(){
-  GameLog(quest1("buy something from the mercant"));
-  GameLog("help the little boy");
-  GameLog("reach level 5");
-  GameLog("try to have 100 Gold");
+  const questList = document.getElementById("questList");
+  questList.innerHTML = ""; // Clear previous quests
+
+  gameState.quests.forEach((quest) => {
+    let questItem = document.createElement("li");
+    questItem.innerHTML = `
+      ${quest.name} - ${quest.description}
+      ${quest.completed ? "<span style='color:green'>✔</span>" : "<span style='color:red'>✘</span>"}
+    `;
+    questList.appendChild(questItem);
+  });
 }
+
+function completeQuest(questId) {
+  const quest = gameState.quests.find(q => q.id === questId);
+
+  if (quest && !quest.completed) {
+    quest.completed = true;
+
+    // Apply the rewards
+    if (quest.reward.gold) {
+      gameState.player.gold += quest.reward.gold;
+    }
+    if (quest.reward.xp) {
+      gameState.player.xp += quest.reward.xp;
+    }
+
+    GameLog(`Quest completed: ${quest.name}! You earned ${quest.reward.gold ? quest.reward.gold + " gold" : ""} ${quest.reward.xp ? quest.reward.xp + " XP" : ""}`);
+    
+    PlayerStats();  // Update stats UI
+    renderQuestLog();  // Update quest log UI
+  }
+}
+
+
+
+
 
 
