@@ -20,6 +20,7 @@ let gameState = {
     goblin: { hp: 30, maxHp: 30, damage: 5, reward: 20 },
   },
 };
+let isQuestListOpen = false;
 
 // Merchant's Items
 const merchantItems = [
@@ -316,6 +317,22 @@ function completeQuest(questId) {
     
     PlayerStats();  // Update stats UI
     renderQuestLog();  // Update quest log UI
+  }
+}
+
+function toogleQuestList(){
+  const gameLog = document.getElementById("output");
+
+  if(isQuestListOpen){
+    gameLog.innerHTML = "";
+    isQuestListOpen = false;
+  }
+  else{
+    gameLog.innerHTML = "<strong> Quest List</strong><br>";
+
+    gameState.quests.forEach((quest) =>{
+
+    });
   }
 }
 
