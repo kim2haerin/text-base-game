@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Caverns of Fate.Kim2haeinGame</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="libraries/p5.js"></script>
+  <script src="sketch.js"></script>
+</head>
+<body>
+  <div id="game">
+    <h1> The Caverns of Fate</h1>
+    <div id="menu">
+      <button onclick="startGame()">Start New Game</button>
+      <button onclick="loadGame()">Load Game</button>
+      <button onclick="saveGame()"> Save Game</button>
+    </div>
+    <div id="playerStats">
+      <span id="playerHp">HP: 100/100</span>
+      <p></p>
+      <span id="playerGold">Gold: 0</span>
+      <p></p>
+      <span id="playerXp">XP: 50</span>
+      <p></p>
+      <span id="playerLevel">level: 1</span>
+    </div>
+    <div id="inventory">
+      <h3>Inventory:</h3>
+      <ul id="inventoryList"></ul>
+    </div>
+    <div id="storyText">Hi and welcome dear Adventure.
+      <p></p>
+      press new game to start.</div>
+    <div id="output"></div>
+  </div>
+</body>
+</html>
+
+
