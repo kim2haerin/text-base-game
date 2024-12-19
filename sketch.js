@@ -20,7 +20,7 @@ let gameState = {
     goblin: { hp: 30, maxHp: 30, damage: 5, reward: 20 },
   },
 };
-let isQuestListOpen = false;
+
 
 // Merchant's Items
 const merchantItems = [
@@ -42,7 +42,6 @@ function setup() {
   storyTextElement = document.getElementById("storyText");
   gameLog = document.getElementById("output");
   playerHpElement = document.getElementById("playerHp");
-  quest= document.getElementById("Quests");
 }
 
 // Start the Game
@@ -57,8 +56,6 @@ function startGame() {
       }
     });
   });
-
-  renderQuestLog();  // Render the initial quest log
 }
 
 
@@ -86,7 +83,7 @@ function StoryText(text, callback) {
 
 // Enter the Cave
 function enterCave() {
-  StoryText("You enter the cave and hear strange noises. Ahead are two paths. Which way will you go?", () => {
+  StoryText("You enter the cave and Ahead are two paths. Which way will you go?", () => {
     addChoiceButtons(["Left", "Right"], (choice) => {
       if (choice === "Left") {
         leftPath();
@@ -104,7 +101,7 @@ function leftPath() {
     gameState.player.gold += 50;
     GameLog("You earned 50 gold!");
     PlayerStats();
-    meetMerchant(); // Trigger Merchant Encounter
+    next(); // Trigger Merchant Encounter
   });
 }
 
@@ -116,9 +113,14 @@ function rightPath() {
       gameState.player.gold += 20;
       GameLog("You earned 20 gold!");
       PlayerStats();
-      
-      completeQuest(1); // Mark the "Defeat the Goblin" quest as complete
+      next();
     });
+  });
+  //next();
+}
+
+function next(){
+  addChoiceButtons(["next=>"], (choice) => {
     meetMerchant();
   });
 }
@@ -127,12 +129,19 @@ function rightPath() {
 function meetMerchant() {
   StoryText("You meet a friendly merchant. He offers you items for sale. What would you like to buy?", () => {
     displayMerchantItems();
-    completeQuest(3); // Complete "Meet the Merchant" quest
   });
+  next2();
 };
 
+function next2(){
+  addChoiceButtons(["next=>"], (choice) => {
+    theChild();
+  });
+}
 
-
+function theChild(){
+  StoryText("Ahead you hear some a strange noise, when you follow the song, there was a goblin attacking a child, will you help him");
+}
 // Display Merchant's Items
 function displayMerchantItems() {
   storyTextElement.innerHTML += "<br><br><strong>Items for Sale:</strong><br>";
@@ -212,13 +221,6 @@ function PlayerStats() {
   document.getElementById("playerGold").textContent = `Gold: ${gameState.player.gold}`;
   document.getElementById("playerXp").textContent = `XP: ${gameState.player.xp}`;
 }
-// the quest list
-gameState.quest = [
-  {id : 1, name: "meet the merchant", complete: false, reward:{gold: 10}},
-  {id:2, name:"try to reach level 5", complete: false, reward:{gold: 20}},
-  {id:3, name:"try to collect 100 Gold", complete:false, reward:"magic potion"},
-  {id : 4, name: "save emporio", complete:false, reward:"food"},
-];
 
 // Log Game Events
 function GameLog(message) {
@@ -285,56 +287,8 @@ function loadGame() {
   }
 }
 
-function questLog(){
-  const questList = document.getElementById("questList");
-  questList.innerHTML = ""; // Clear previous quests
 
-  gameState.quests.forEach((quest) => {
-    let questItem = document.createElement("li");
-    questItem.innerHTML = `
-      ${quest.name} - ${quest.description}
-      ${quest.completed ? "<span style='color:green'>✔</span>" : "<span style='color:red'>✘</span>"}
-    `;
-    questList.appendChild(questItem);
-  });
-}
 
-function completeQuest(questId) {
-  const quest = gameState.quests.find(q => q.id === questId);
-
-  if (quest && !quest.completed) {
-    quest.completed = true;
-
-    // Apply the rewards
-    if (quest.reward.gold) {
-      gameState.player.gold += quest.reward.gold;
-    }
-    if (quest.reward.xp) {
-      gameState.player.xp += quest.reward.xp;
-    }
-
-    GameLog(`Quest completed: ${quest.name}! You earned ${quest.reward.gold ? quest.reward.gold + " gold" : ""} ${quest.reward.xp ? quest.reward.xp + " XP" : ""}`);
-    
-    PlayerStats();  // Update stats UI
-    renderQuestLog();  // Update quest log UI
-  }
-}
-
-function toogleQuestList(){
-  const gameLog = document.getElementById("output");
-
-  if(isQuestListOpen){
-    gameLog.innerHTML = "";
-    isQuestListOpen = false;
-  }
-  else{
-    gameLog.innerHTML = "<strong> Quest List</strong><br>";
-
-    gameState.quests.forEach((quest) =>{
-
-    });
-  }
-}
 
 
 

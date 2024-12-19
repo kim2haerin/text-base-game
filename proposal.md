@@ -6,11 +6,9 @@ this is a  text-base RPG/survival game, there will be two kinds of ending, you g
 
 - the story
 - a store to buy things
-- make the quests
-- get rewards when the quests are complete
 - collect stuffs if you killed a monster like meat, magic stone, etc...
 - background
-- a multi choice game
+-two types of endings
 
 # Nice to have
 - generate random NPC
@@ -24,3 +22,6 @@ this is a  text-base RPG/survival game, there will be two kinds of ending, you g
 - you need to have gasha tickets to pull the gasha machine
 - save button
    - you can save your progress in the game
+- make the quests
+- get rewards when the quests are complete
+- a multi choice game
