@@ -6,7 +6,6 @@ let gameState = {
     maxHp: 100,
     gold: 0,
     level: 1,
-    xp: 100,
     skills: {
       strength: 1,
       agility: 1,
@@ -28,7 +27,6 @@ const merchantItems = [
   { name: "Sword", price: 50, effect: { weapon: "Sword" }, description: "A basic sword to deal more damage." },
   { name: "Food", price: 10, effect: { hp: 10 }, description: "Restores 10 HP." },
   { name: "Shield", price: 40, effect: { armor: "Shield" }, description: "Provides better defense." },
-  { name: "Magic Potion", price: 100, effect: { xp: 50 }, description: "Grants 50 XP." },
 ];
 
 // HTML Elements
@@ -113,15 +111,22 @@ function rightPath() {
       gameState.player.gold += 20;
       GameLog("You earned 20 gold!");
       PlayerStats();
-      next();
+      //next();
     });
+    //next();
   });
   //next();
 }
 
 function next(){
-  addChoiceButtons(["next=>"], (choice) => {
+  addChoiceButtons(["next =>"], (choice) => {
     meetMerchant();
+  });
+}
+
+function next2(){
+  addChoiceButtons(["next =>"], (choice) => {
+    theChild();
   });
 }
 
@@ -133,14 +138,26 @@ function meetMerchant() {
   next2();
 };
 
-function next2(){
-  addChoiceButtons(["next=>"], (choice) => {
-    theChild();
+function theChild(){
+  StoryText("Ahead you hear some a strange noise, when you follow the song, there was a goblin attacking a child, will you help him");
+  addChoiceButtons(["save him", "abandon him"], (choice) => {
+    if (choice === "save him"){
+      saveHim();
+    }
+    else {
+      abondanHim();
+    }
   });
 }
 
-function theChild(){
-  StoryText("Ahead you hear some a strange noise, when you follow the song, there was a goblin attacking a child, will you help him");
+function saveHim(){
+  StoryText("you run to the goblind to save the boy");
+  startBattle(gameState.enemies.goblin, () => {
+    StoryText("You defeated the goblin");
+    //gameState.player.gold += 20;
+    GameLog("You saved the boy, Hip Hip Hooray!");
+    PlayerStats();
+  });
 }
 // Display Merchant's Items
 function displayMerchantItems() {
@@ -172,9 +189,6 @@ function purchaseItem(item) {
     }
     if (item.effect.weapon) {
       gameState.player.weapon = item.effect.weapon;
-    }
-    if (item.effect.xp) {
-      gameState.player.xp += item.effect.xp;
     }
 
     GameLog(`You bought ${item.name}. ${item.description}`);
@@ -219,7 +233,6 @@ function startBattle(enemy, onVictory) {
 function PlayerStats() {
   playerHpElement.textContent = `HP: ${gameState.player.hp}/${gameState.player.maxHp}`;
   document.getElementById("playerGold").textContent = `Gold: ${gameState.player.gold}`;
-  document.getElementById("playerXp").textContent = `XP: ${gameState.player.xp}`;
 }
 
 // Log Game Events
@@ -248,8 +261,6 @@ function resetGame() {
     hp: 100,
     maxHp: 100,
     gold: 0,
-    level: 1,
-    xp: 0,
     skills: {
       strength: 1,
       agility: 1,
