@@ -5,15 +5,6 @@ let gameState = {
     hp: 100,
     maxHp: 100,
     gold: 0,
-    level: 1,
-    skills: {
-      strength: 1,
-      agility: 1,
-      intelligence: 1,
-      points: 0,
-    },
-    inventory: [],
-    weapon: "Fists",
   },
   enemies: {
     goblin: { hp: 30, maxHp: 30, damage: 5, reward: 20 },
@@ -26,7 +17,6 @@ const merchantItems = [
   { name: "Health Potion", price: 20, effect: { hp: 20 }, description: "Restores 20 HP." },
   { name: "Water", price: 5, effect: { hp: 5 }, description: "Restores 5 HP." },
   { name: "Food", price: 10, effect: { hp: 10 }, description: "Restores 10 HP." },
-  //{ name: "Lumine", price: 40, effect: { object: "Crystal" }, description: "A crystal that will glow for 10 minutes." },
 ];
 
 // HTML Elements
@@ -35,8 +25,6 @@ let storyTextElement, gameLog, playerHpElement;
 
 // Initial Setup
 function setup() {
-  //noCanvas();
-
   // Connect HTML elements
   storyTextElement = document.getElementById("storyText");
   gameLog = document.getElementById("output");
@@ -48,14 +36,14 @@ function setup() {
 function playBackgroundMusic() {
   const music = document.getElementById("backgroundMusic");
   if (music) {
-    music.volume = 0.5; // Adjust volume (0.0 to 1.0)
+    music.volume = 0.5;
     music.play();
   }
 }
 
 // Start the Game
 function startGame() {
-  playBackgroundMusic(); // Start music when the game starts
+  playBackgroundMusic();
   StoryText("You stand at the entrance of a dark cave. Do you want to enter?", () => {
     addChoiceButtons(["Yes", "No"], (choice) => {
       if (choice === "Yes") {
@@ -182,8 +170,8 @@ function saveChild() {
   StoryText("You run to the goblin to save the boy.", () => {
     startBattle(gameState.enemies.goblin, () => {
       StoryText("You defeated the goblin. the kid was so greatful of your help he gave you some food.", () => {
-        gameState.player.gold += 20;
-        GameLog("You earned 20 gold!");
+        gameState.player.hp += 10;
+        GameLog("You earned some food!");
         PlayerStats();
         addChoiceButtons(["Next"], ()=>{
           puzzleNumber();
@@ -221,12 +209,94 @@ function portal(){
 }
 
 function theRoom(){
-  StoryText("you have no choose put to go in the portal",()=>{
+  StoryText("you are in a room with a lot of coloful crystal and at the end of the room you see a key",()=>{
     addChoiceButtons(["Next"], ()=>{
-      theRoom();
+      miniGame();
       });
     });
 }
+
+function miniGame(){
+  StoryText("to get the key you need to find four good answers to my riddle challenge, are you ready?",()=>{
+    addChoiceButtons(["Next"], ()=>{
+      riddle1();
+      });
+    });
+}
+
+function riddle1() {
+  StoryText("I’m light as a feather, yet the strongest person can’t hold me for five minutes. What am I?", () => {
+    addChoiceButtons(["Breath", "Shadow", "Air", "Thought"], (choice) => {
+      if (choice.toLowerCase() === "breath") { // Case-insensitive check
+        GameLog("Correct! Moving on to the next riddle.");
+        riddle2();
+      } 
+      else {
+        GameLog("Wrong answer! Try again.");
+        riddle1(); // Reload the question
+      }
+    });
+  });
+}
+
+function riddle2() {
+  StoryText("the next question is What has keys but can’t open locks?", () => {
+    addChoiceButtons(["Safe", "Piano", "Keyboard", "Treasure Chest"], (choice) => {
+      if (choice.toLowerCase() === "keyboard") { // Case-insensitive check
+        GameLog("Correct! Moving on to the next riddle.");
+        riddle3();
+      } 
+      else {
+        GameLog("Wrong answer! Try again.");
+        riddle2(); // Reload the question
+      }
+    });
+  });
+}
+
+function riddle3() {
+  StoryText("the next question is The more you take from me, the bigger I get. What am I?", () => {
+    addChoiceButtons(["Memory", "Hole", "Mountain", "Puzzle"], (choice) => {
+      if (choice.toLowerCase() === "hole") { // Case-insensitive check
+        GameLog("Correct! Moving on to the next riddle.");
+        riddle4();
+      } 
+      else {
+        GameLog("Wrong answer! Try again.");
+        riddle3(); // Reload the question
+      }
+    });
+  });
+}
+
+function riddle4() {
+  StoryText("good job you did well so far, the last question is What has one eye but can’t see?", () => {
+    addChoiceButtons(["Cyclops", "Storm", "Mirror", "Needle"], (choice) => {
+      if (choice.toLowerCase() === "needle") { // Case-insensitive check
+        GameLog("Correct! Moving on to the next riddle.");
+        gotTheKey();
+      } 
+      else {
+        GameLog("Wrong answer! Try again.");
+        riddle4(); // Reload the question
+      }
+    });
+  });
+}
+
+function gotTheKey(){
+  StoryText("You finally got the key, good job, now let see if it's the key to open the door", () => {
+    addChoiceButtons(["Next"], ()=>{
+      toTheDoor();
+      });
+  });
+}
+
+function toTheDoor(){
+  StoryText("You try the key on the door and it worked, you are finally out of the cave Hooray!!!", () => {
+  });
+}
+
 // Battle Logic
 function startBattle(enemy, onVictory) {
   const battleInterval = setInterval(() => {
