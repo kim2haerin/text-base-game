@@ -7,7 +7,7 @@ let gameState = {
     gold: 0,
   },
   enemies: {
-    goblin: { hp: 30, maxHp: 30, damage: 5, reward: 20 },
+    goblin: { hp: 50, maxHp: 50, damage: 5, reward: 20 },
   },
 };
 
@@ -48,7 +48,8 @@ function startGame() {
     addChoiceButtons(["Yes", "No"], (choice) => {
       if (choice === "Yes") {
         enterCave();
-      } else {
+      } 
+      else {
         StoryText("Maybe next time then. The adventure ends here.");
       }
     });
@@ -57,6 +58,7 @@ function startGame() {
 
 
 // Story Text with Typewriter Effect
+//i got the idea from https://www.youtube.com/watch?time_continue=168&v=MiTJnYHX3iA&embeds_referring_euri=https%3A%2F%2Fchatgpt.com%2F&source_ve_path=MzY4NDIsMjM4NTE and https://www.youtube.com/watch?time_continue=142&v=kz_vwAF4NHI&embeds_referring_euri=https%3A%2F%2Fchatgpt.com%2F&source_ve_path=MzY4NDIsMzY4NDIsMzY4NDIsMzY4NDIsMTI3Mjk5LDIzODUx
 function StoryText(text, callback) {
   storyTextElement.innerHTML = ""; // Clear previous text
   let i = 0;
@@ -65,12 +67,14 @@ function StoryText(text, callback) {
     if (i < text.length) {
       storyTextElement.innerHTML += text.charAt(i);
       i++;
-    } else {
+    } 
+    else {
       clearInterval(interval);
-      if (callback) callback();
+     if (callback) callback();
     }
   }, 50);
 }
+
 
 
 
