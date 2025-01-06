@@ -3,11 +3,17 @@ let gameState = {
   player: {
     name: "Hero",
     hp: 100,
-    maxHp: 100,
+    maxHp: 500,
     gold: 0,
+    level: 1,
+    maxLevel: 20
   },
   enemies: {
-    goblin: { hp: 50, maxHp: 50, damage: 5, reward: 20 },
+    goblin: { hp: 100, maxHp: 100, damage: 5, reward: 30 },
+    demonDog: { hp: 150, maxHp: 150, damage: 5, reward: 45 },
+    slime: { hp: 50, maxHp: 50, damage: 5, reward: 20 },
+    Golem: { hp: 100, maxHp: 70, damage: 3, reward: 50 },
+    Minataur: { hp: 150, maxHp: 150, damage: 3, reward: 100 },
   },
 };
 
@@ -20,14 +26,15 @@ const merchantItems = [
 ];
 
 // HTML Elements
-let storyTextElement, gameLog, playerHpElement;
+let storyTextElement, gameLog, playerHpElement, input;
 
 
 // Initial Setup
 function setup() {
   // Connect HTML elements
   storyTextElement = document.getElementById("storyText");
-  gameLog = document.getElementById("output");
+  gameLog = document.getElementById("output1");
+  input = document.getElementById("output2");
   playerHpElement = document.getElementById("playerHp");
   PlayerStats();
 }
@@ -70,7 +77,9 @@ function StoryText(text, callback) {
     } 
     else {
       clearInterval(interval);
-     if (callback) callback();
+      if (callback) {
+        callback();
+      }
     }
   }, 50);
 }
@@ -82,8 +91,12 @@ function StoryText(text, callback) {
 function enterCave() {
   StoryText("You enter the cave and see two paths. Which way will you go?", () => {
     addChoiceButtons(["Left", "Right"], (choice) => {
-      if (choice === "Left") leftPath();
-      else rightPath();
+      if (choice === "Left") {
+        leftPath();
+      }
+      else {
+        rightPath();
+      }
     });
   });
 }
@@ -95,7 +108,7 @@ function leftPath() {
     GameLog("You earned 50 gold!");
     PlayerStats();
     addChoiceButtons(["Next"], ()=>{
-    meetMerchant();
+      meetMerchant();
     });
   });
 }
@@ -109,8 +122,8 @@ function rightPath() {
         GameLog("You earned 20 gold!");
         PlayerStats();
         addChoiceButtons(["Next"], ()=>{
-        meetMerchant();
-      });
+          meetMerchant();
+        });
       });
     });
   });
@@ -153,7 +166,8 @@ function purchaseItem(item) {
 
     GameLog(`You bought ${item.name}. ${item.description}`);
     PlayerStats();
-  } else {
+  }
+  else {
     GameLog(`You don't have enough gold to buy ${item.name}.`);
   }
 }
@@ -163,9 +177,11 @@ function continueJourney() {
   StoryText("As you continue, you hear strange noises. A goblin is attacking a child. Will you help him?", () => {
     addChoiceButtons(["Save him", "Abandon him"], (choice) => {
       if (choice === "Save him") {
-      saveChild();}
+        saveChild();
+      }
       else{
-        abandonChild();}
+        abandonChild();
+      }
     });
   });
 }
@@ -179,7 +195,7 @@ function saveChild() {
         PlayerStats();
         addChoiceButtons(["Next"], ()=>{
           puzzleNumber();
-      });
+        });
       });
     });
   });
@@ -198,16 +214,16 @@ function abandonChild() {
 
 function puzzleNumber(){
   StoryText("After a long walk you are faced with two ways again, there is a portal and a big iron door and this door is lock", ()=>{
-  addChoiceButtons(["Next"], ()=>{
-    portal();
+    addChoiceButtons(["Next"], ()=>{
+      portal();
+    });
   });
-});
 }
 
 function portal(){
   StoryText("you have no choose put to go in the portal",()=>{
-  addChoiceButtons(["Next"], ()=>{
-    theRoom();
+    addChoiceButtons(["Next"], ()=>{
+      theRoom();
     });
   });
 }
@@ -216,16 +232,16 @@ function theRoom(){
   StoryText("you are in a room with a lot of coloful crystal and at the end of the room you see a key",()=>{
     addChoiceButtons(["Next"], ()=>{
       miniGame();
-      });
     });
+  });
 }
 
 function miniGame(){
   StoryText("to get the key you need to find four good answers to my riddle challenge, are you ready?",()=>{
     addChoiceButtons(["Next"], ()=>{
       riddle1();
-      });
     });
+  });
 }
 
 function riddle1() {
@@ -292,7 +308,7 @@ function gotTheKey(){
   StoryText("You finally got the key, good job, now let see if it's the key to open the door", () => {
     addChoiceButtons(["Next"], ()=>{
       toTheDoor();
-      });
+    });
   });
 }
 

@@ -5,59 +5,60 @@ let gameState = {
     hp: 100,
     maxHp: 100,
     gold: 0,
-    level: 1,
-    xp: 100,
-    skills: {
-      strength: 1,
-      agility: 1,
-      intelligence: 1,
-      points: 0,
-    },
-    inventory: [],
-    weapon: "Fists",
   },
   enemies: {
-    goblin: { hp: 30, maxHp: 30, damage: 5, reward: 20 },
+    goblin: { hp: 50, maxHp: 50, damage: 5, reward: 20 },
   },
 };
+
 
 // Merchant's Items
 const merchantItems = [
   { name: "Health Potion", price: 20, effect: { hp: 20 }, description: "Restores 20 HP." },
-  { name: "Sword", price: 50, effect: { weapon: "Sword" }, description: "A basic sword to deal more damage." },
+  { name: "Water", price: 5, effect: { hp: 5 }, description: "Restores 5 HP." },
   { name: "Food", price: 10, effect: { hp: 10 }, description: "Restores 10 HP." },
-  { name: "Shield", price: 40, effect: { armor: "Shield" }, description: "Provides better defense." },
-  { name: "Magic Potion", price: 100, effect: { xp: 50 }, description: "Grants 50 XP." },
 ];
 
 // HTML Elements
 let storyTextElement, gameLog, playerHpElement;
 
-// Setup Function
-function setup() {
-  noCanvas();
 
+// Initial Setup
+function setup() {
   // Connect HTML elements
   storyTextElement = document.getElementById("storyText");
   gameLog = document.getElementById("output");
   playerHpElement = document.getElementById("playerHp");
+  PlayerStats();
+}
+
+// Play Background Music
+function playBackgroundMusic() {
+  const music = document.getElementById("backgroundMusic");
+  if (music) {
+    music.volume = 0.5;
+    music.play();
+  }
 }
 
 // Start the Game
 function startGame() {
+  playBackgroundMusic();
   StoryText("You stand at the entrance of a dark cave. Do you want to enter?", () => {
     addChoiceButtons(["Yes", "No"], (choice) => {
       if (choice === "Yes") {
         enterCave();
-      }
+      } 
       else {
-        StoryText("What a shame. Your adventure ends here.");
+        StoryText("Maybe next time then. The adventure ends here.");
       }
     });
   });
 }
 
-// Story Text with a Typewriter Effect
+
+// Story Text with Typewriter Effect
+//i got the idea from https://www.youtube.com/watch?time_continue=168&v=MiTJnYHX3iA&embeds_referring_euri=https%3A%2F%2Fchatgpt.com%2F&source_ve_path=MzY4NDIsMjM4NTE and https://www.youtube.com/watch?time_continue=142&v=kz_vwAF4NHI&embeds_referring_euri=https%3A%2F%2Fchatgpt.com%2F&source_ve_path=MzY4NDIsMzY4NDIsMzY4NDIsMzY4NDIsMTI3Mjk5LDIzODUx
 function StoryText(text, callback) {
   storyTextElement.innerHTML = ""; // Clear previous text
   let i = 0;
@@ -66,26 +67,23 @@ function StoryText(text, callback) {
     if (i < text.length) {
       storyTextElement.innerHTML += text.charAt(i);
       i++;
-    }
+    } 
     else {
       clearInterval(interval);
-      if (callback) {
-        callback();
-      } // Execute callback after text is fully displayed
+     if (callback) callback();
     }
-  }, 50); // Adjust the speed of text reveal
+  }, 50);
 }
+
+
+
 
 // Enter the Cave
 function enterCave() {
-  StoryText("You enter the cave and hear strange noises. Ahead are two paths. Which way will you go?", () => {
+  StoryText("You enter the cave and see two paths. Which way will you go?", () => {
     addChoiceButtons(["Left", "Right"], (choice) => {
-      if (choice === "Left") {
-        leftPath();
-      }
-      else {
-        rightPath();
-      }
+      if (choice === "Left") leftPath();
+      else rightPath();
     });
   });
 }
@@ -96,7 +94,9 @@ function leftPath() {
     gameState.player.gold += 50;
     GameLog("You earned 50 gold!");
     PlayerStats();
-    meetMerchant(); // Trigger Merchant Encounter
+    addChoiceButtons(["Next"], ()=>{
+    meetMerchant();
+    });
   });
 }
 
@@ -104,16 +104,19 @@ function leftPath() {
 function rightPath() {
   StoryText("A goblin ambushes you! Prepare for battle!", () => {
     startBattle(gameState.enemies.goblin, () => {
-      StoryText("You defeated the goblin and found 20 gold!");
-      gameState.player.gold += 20;
-      GameLog("You earned 20 gold!");
-      PlayerStats();
+      StoryText("You defeated the goblin and found 20 gold!", () => {
+        gameState.player.gold += 20;
+        GameLog("You earned 20 gold!");
+        PlayerStats();
+        addChoiceButtons(["Next"], ()=>{
+        meetMerchant();
+      });
+      });
     });
-    meetMerchant(); // Trigger Merchant Encounter
   });
 }
 
-// Meet the Merchant
+// Merchant Interaction
 function meetMerchant() {
   StoryText("You meet a friendly merchant. He offers you items for sale. What would you like to buy?", () => {
     displayMerchantItems();
@@ -124,144 +127,233 @@ function meetMerchant() {
 function displayMerchantItems() {
   storyTextElement.innerHTML += "<br><br><strong>Items for Sale:</strong><br>";
   merchantItems.forEach((item) => {
-    let button = document.createElement("button");
+    const button = document.createElement("button");
     button.textContent = `${item.name} - ${item.price} gold`;
     button.onclick = () => purchaseItem(item);
     storyTextElement.appendChild(button);
   });
 
-  // Option to Leave the Shop
-  let leaveButton = document.createElement("button");
+  const leaveButton = document.createElement("button");
   leaveButton.textContent = "Leave";
-  leaveButton.onclick = () => {
-    StoryText("You thank the merchant and continue your journey.");
-  };
+  leaveButton.onclick = () => continueJourney();
   storyTextElement.appendChild(leaveButton);
 }
 
-// Purchase Item Logic
+// Purchase Items from Merchant
 function purchaseItem(item) {
   if (gameState.player.gold >= item.price) {
     gameState.player.gold -= item.price;
 
-    // Apply Item Effect
     if (item.effect.hp) {
       gameState.player.hp = Math.min(gameState.player.hp + item.effect.hp, gameState.player.maxHp);
     }
     if (item.effect.weapon) {
       gameState.player.weapon = item.effect.weapon;
     }
-    if (item.effect.xp) {
-      gameState.player.xp += item.effect.xp;
-    }
 
     GameLog(`You bought ${item.name}. ${item.description}`);
     PlayerStats();
-  }
-  else {
+  } else {
     GameLog(`You don't have enough gold to buy ${item.name}.`);
   }
 }
 
-// Start Battle
+// Continue Journey
+function continueJourney() {
+  StoryText("As you continue, you hear strange noises. A goblin is attacking a child. Will you help him?", () => {
+    addChoiceButtons(["Save him", "Abandon him"], (choice) => {
+      if (choice === "Save him") {
+      saveChild();}
+      else{
+        abandonChild();}
+    });
+  });
+}
+
+function saveChild() {
+  StoryText("You run to the goblin to save the boy.", () => {
+    startBattle(gameState.enemies.goblin, () => {
+      StoryText("You defeated the goblin. the kid was so greatful of your help he gave you some food.", () => {
+        gameState.player.hp += 10;
+        GameLog("You earned some food!");
+        PlayerStats();
+        addChoiceButtons(["Next"], ()=>{
+          puzzleNumber();
+      });
+      });
+    });
+  });
+}
+
+
+// Abandon the Child
+function abandonChild() {
+  StoryText("You leave the child to their fate and continue on your way. Was it the right choice?", () => {
+    GameLog("You abandoned the child. The road ahead feels lonelier.");
+    addChoiceButtons(["Next"], ()=>{
+      puzzleNumber();
+    });
+  });
+}
+
+function puzzleNumber(){
+  StoryText("After a long walk you are faced with two ways again, there is a portal and a big iron door and this door is lock", ()=>{
+  addChoiceButtons(["Next"], ()=>{
+    portal();
+  });
+});
+}
+
+function portal(){
+  StoryText("you have no choose put to go in the portal",()=>{
+  addChoiceButtons(["Next"], ()=>{
+    theRoom();
+    });
+  });
+}
+
+function theRoom(){
+  StoryText("you are in a room with a lot of coloful crystal and at the end of the room you see a key",()=>{
+    addChoiceButtons(["Next"], ()=>{
+      miniGame();
+      });
+    });
+}
+
+function miniGame(){
+  StoryText("to get the key you need to find four good answers to my riddle challenge, are you ready?",()=>{
+    addChoiceButtons(["Next"], ()=>{
+      riddle1();
+      });
+    });
+}
+
+function riddle1() {
+  StoryText("I’m light as a feather, yet the strongest person can’t hold me for five minutes. What am I?", () => {
+    addChoiceButtons(["Breath", "Shadow", "Air", "Thought"], (choice) => {
+      if (choice.toLowerCase() === "breath") { // Case-insensitive check
+        GameLog("Correct! Moving on to the next riddle.");
+        riddle2();
+      } 
+      else {
+        GameLog("Wrong answer! Try again.");
+        riddle1(); // Reload the question
+      }
+    });
+  });
+}
+
+function riddle2() {
+  StoryText("the next question is What has keys but can’t open locks?", () => {
+    addChoiceButtons(["Safe", "Piano", "Keyboard", "Treasure Chest"], (choice) => {
+      if (choice.toLowerCase() === "keyboard") { // Case-insensitive check
+        GameLog("Correct! Moving on to the next riddle.");
+        riddle3();
+      } 
+      else {
+        GameLog("Wrong answer! Try again.");
+        riddle2(); // Reload the question
+      }
+    });
+  });
+}
+
+function riddle3() {
+  StoryText("the next question is The more you take from me, the bigger I get. What am I?", () => {
+    addChoiceButtons(["Memory", "Hole", "Mountain", "Puzzle"], (choice) => {
+      if (choice.toLowerCase() === "hole") { // Case-insensitive check
+        GameLog("Correct! Moving on to the next riddle.");
+        riddle4();
+      } 
+      else {
+        GameLog("Wrong answer! Try again.");
+        riddle3(); // Reload the question
+      }
+    });
+  });
+}
+
+function riddle4() {
+  StoryText("good job you did well so far, the last question is What has one eye but can’t see?", () => {
+    addChoiceButtons(["Cyclops", "Storm", "Mirror", "Needle"], (choice) => {
+      if (choice.toLowerCase() === "needle") { // Case-insensitive check
+        GameLog("Correct! Moving on to the next riddle.");
+        gotTheKey();
+      } 
+      else {
+        GameLog("Wrong answer! Try again.");
+        riddle4(); // Reload the question
+      }
+    });
+  });
+}
+
+function gotTheKey(){
+  StoryText("You finally got the key, good job, now let see if it's the key to open the door", () => {
+    addChoiceButtons(["Next"], ()=>{
+      toTheDoor();
+      });
+  });
+}
+
+function toTheDoor(){
+  StoryText("You try the key on the door and it worked, you are finally out of the cave Hooray!!!", () => {
+  });
+}
+
+// Battle Logic
 function startBattle(enemy, onVictory) {
-  PlayerStats();
-  let battleLog = "";
-
   const battleInterval = setInterval(() => {
-    let playerDamage = Math.floor(Math.random() * 10) + 1;
-    let enemyDamage = Math.floor(Math.random() * enemy.damage);
+    const playerDamage = Math.floor(Math.random() * 10) + 1;
+    const enemyDamage = Math.floor(Math.random() * enemy.damage);
 
-    enemy.hp -= playerDamage;
-    gameState.player.hp -= enemyDamage;
+    enemy.hp = Math.max(0, enemy.hp - playerDamage);
+    gameState.player.hp = Math.max(0, gameState.player.hp - enemyDamage);
 
-    battleLog = `You dealt ${playerDamage} damage. The enemy dealt ${enemyDamage} damage.`;
-    GameLog(battleLog);
-
+    GameLog(`You dealt ${playerDamage} damage. The enemy dealt ${enemyDamage} damage.`);
     PlayerStats();
 
     if (enemy.hp <= 0) {
       clearInterval(battleInterval);
-      enemy.hp = enemy.maxHp; // Reset enemy HP for next encounter
+      enemy.hp = enemy.maxHp;
       onVictory();
     }
 
     if (gameState.player.hp <= 0) {
       clearInterval(battleInterval);
-      StoryText("You were defeated by the enemy. Game over.");
+      StoryText("You were defeated. Game over.");
     }
   }, 1000);
 }
 
-// Player Stats
+// Display Player Stats
 function PlayerStats() {
   playerHpElement.textContent = `HP: ${gameState.player.hp}/${gameState.player.maxHp}`;
   document.getElementById("playerGold").textContent = `Gold: ${gameState.player.gold}`;
-  document.getElementById("playerXp").textContent = `XP: ${gameState.player.xp}`;
 }
 
 // Log Game Events
 function GameLog(message) {
-  gameLog.innerHTML += `<p>${message}</p>`;
+  const logEntry = document.createElement("p");
+  logEntry.textContent = message;
+  gameLog.appendChild(logEntry);
+
+  // Automatically clear the log after 5 seconds (adjust time as needed)
+  setTimeout(() => {
+    logEntry.remove(); // Removes this specific log entry
+  }, 5000);
 }
 
 // Add Choice Buttons
 function addChoiceButtons(choices, callback) {
-  storyTextElement.innerHTML += "<br><br>";
+  storyTextElement.innerHTML += "<br>";
   choices.forEach((choice) => {
-    let button = document.createElement("button");
+    const button = document.createElement("button");
     button.textContent = choice;
     button.onclick = () => {
-      storyTextElement.innerHTML = ""; // Clear choices after selection
+      storyTextElement.innerHTML = "";
       callback(choice);
     };
     storyTextElement.appendChild(button);
   });
 }
-
-function resetGame() {
-  localStorage.removeItem("adventureGameSave");
-  gameState.player = {
-    name: "Hero",
-    hp: 100,
-    maxHp: 100,
-    gold: 0,
-    level: 1,
-    xp: 0,
-    skills: {
-      strength: 1,
-      agility: 1,
-      intelligence: 1,
-      points: 0,
-    },
-    inventory: [],
-    weapon: "Fists",
-  };
-  GameLog("New game started. Previous save cleared.");
-  PlayerStats();
-}
-
-function saveGame() {
-  const saveData = {
-    player: gameState.player,
-    inventory: gameState.player.inventory,
-  };
-
-  localStorage.setItem("adventureGameSave", JSON.stringify(saveData));
-  GameLog("Game saved successfully!");
-}
-
-function loadGame() {
-  const saveData = JSON.parse(localStorage.getItem("adventureGameSave"));
-
-  if (saveData) {
-    gameState.player = saveData.player;
-    gameState.player.inventory = saveData.inventory || [];
-    GameLog("Game loaded successfully!");
-    PlayerStats(); // Update the stats on the screen
-  } else {
-    GameLog("No save data found!");
-  }
-}
-
-

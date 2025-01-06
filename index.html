@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Caverns of Fate.Kim2haeinGame</title>
+  <title>The Caverns of Fate</title>
   <link rel="stylesheet" href="style.css">
   <script src="libraries/p5.js"></script>
   <script src="sketch.js"></script>
@@ -12,9 +12,13 @@
   <div id="game">
     <h1> The Caverns of Fate</h1>
     <div id="menu">
-      <button onclick="startGame()">Start New Game</button>
+      <button onclick="startGame()">New Game</button>
+      <button onclick="loadGame()">Load Game</button>
+      <button onclick="saveGame()">Save Game</button>
     </div>
     <div id="playerStats">
+      <p></p>
+      <span id="level">Level: 1</span>
       <p></p>
       <span id="playerHp">HP: 100/100</span>
       <p></p>
@@ -24,11 +28,16 @@
     <div id="storyText">Hi and welcome dear Adventure.
       <p></p>
       press new game to start.</div>
-    <div id="output"></div> 
+    <div id="output1"></div> 
     <audio id="backgroundMusic" loop>
-      <source src="sounds/backgroundMusic.mp3" type="audio/mp3">
-      
+      <source src="sounds/backgroundMusic.mp3" type="audio/mp3">  
     </audio> 
+    <div id="menu">
+      <button onclick="QuestList()">Quests</button>
+      <button onclick="loadGame()">Inventory</button>
+      <button onclick="saveGame()">Save Game</button>
+    </div>
+    <div id="output2"></div> 
   </div>
 </body>
 </html>
