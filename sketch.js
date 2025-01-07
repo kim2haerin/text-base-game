@@ -4,15 +4,24 @@ let gameState = {
     name: "Hero",
     hp: 100,
     maxHp: 500,
-    gold: 0,
+    gold: 10,
     level: 1,
-    maxLevel: 20
+    maxLevel: 20,
+    weapon: "fist"
   },
   stats:{
     strenght: 10,
     agility: 8,
     speed: 7,
     charisma: 9,
+  },
+
+  inventory:{
+    manaCore: 0,
+    food:0,
+    water:0,
+    luminusCrystal:5,
+    manaPotion: 2,
   },
   enemies: {
     goblin: { hp: 100, maxHp: 100, damage: 5, reward: 30 },
@@ -50,6 +59,15 @@ const quests = [
   },
 ];
 
+function statusLevelUp(){
+  if(weapon==="sword"){
+    strenght: 15;
+  }
+  else if(weapon==="rare sword"){
+    strenght: 30;
+  }
+}
+
 // HTML Elements
 let storyTextElement, gameLog, playerHpElement, input;
 
@@ -73,42 +91,63 @@ function playBackgroundMusic() {
   }
 }
 
-function QuestList(){
-  const output2 = document.getElementById("output2");
-  output2.innerHTML = "";
 
-  quests.forEach((quest)=>{
-    const questDiv = document.createElement("div");
-    questDiv.classList.add("quest");
+// Battle Logic
+function startBattle(enemy, onVictory) {
+  const battleInterval = setInterval(() => {
+    const playerDamage = Math.floor(Math.random() * 10) + 1;
+    const enemyDamage = Math.floor(Math.random() * enemy.damage);
 
-    questDiv.innerHTML = `
-      <h4>${quest.name}</h4>
-      <p>${quest.description}</p>
-      <p><strong>Status:</strong> ${quest.status}</p>
-      <p><strong>Reward:</strong> ${quest.reward}</p>
-    `;
+    enemy.hp = Math.max(0, enemy.hp - playerDamage);
+    gameState.player.hp = Math.max(0, gameState.player.hp - enemyDamage);
 
-    output2.appendChild(questDiv); 
-  })
+    GameLog(`You dealt ${playerDamage} damage. The enemy dealt ${enemyDamage} damage.`);
+    PlayerStats();
+
+    if (enemy.hp <= 0) {
+      clearInterval(battleInterval);
+      enemy.hp = enemy.maxHp;
+      onVictory();
+    }
+
+    if (gameState.player.hp <= 0) {
+      clearInterval(battleInterval);
+      StoryText("You were defeated. Game over.");
+    }
+  }, 1000);
 }
 
-document.getElementById("QuestList").onclick = QuestList;
+// Display Player Stats
+function PlayerStats() {
+  playerHpElement.textContent = `HP: ${gameState.player.hp}/${gameState.player.maxHp}`;
+  document.getElementById("playerGold").textContent = `Gold: ${gameState.player.gold}`;
+}
 
-// Start the Game
-function startGame() {
-  playBackgroundMusic();
-  StoryText("You stand at the entrance of a dark cave. Do you want to enter?", () => {
-    addChoiceButtons(["Yes", "No"], (choice) => {
-      if (choice === "Yes") {
-        enterCave();
-      } 
-      else {
-        StoryText("Maybe next time then. The adventure ends here.");
-      }
-    });
+// Log Game Events
+function GameLog(message) {
+  const logEntry = document.createElement("p");
+  logEntry.textContent = message;
+  gameLog.appendChild(logEntry);
+
+  // Automatically clear the log after 5 seconds (adjust time as needed)
+  setTimeout(() => {
+    logEntry.remove(); // Removes this specific log entry
+  }, 5000);
+}
+
+// Add Choice Buttons
+function addChoiceButtons(choices, callback) {
+  storyTextElement.innerHTML += "<br>";
+  choices.forEach((choice) => {
+    const button = document.createElement("button");
+    button.textContent = choice;
+    button.onclick = () => {
+      storyTextElement.innerHTML = "";
+      callback(choice);
+    };
+    storyTextElement.appendChild(button);
   });
 }
-
 
 // Story Text with Typewriter Effect
 //i got the idea from https://www.youtube.com/watch?time_continue=168&v=MiTJnYHX3iA&embeds_referring_euri=https%3A%2F%2Fchatgpt.com%2F&source_ve_path=MzY4NDIsMjM4NTE and https://www.youtube.com/watch?time_continue=142&v=kz_vwAF4NHI&embeds_referring_euri=https%3A%2F%2Fchatgpt.com%2F&source_ve_path=MzY4NDIsMzY4NDIsMzY4NDIsMzY4NDIsMTI3Mjk5LDIzODUx
@@ -130,8 +169,87 @@ function StoryText(text, callback) {
   }, 50);
 }
 
+// Display Merchant's Items
+function displayMerchantItems() {
+  storyTextElement.innerHTML += "<br><br><strong>Items for Sale:</strong><br>";
+  merchantItems.forEach((item) => {
+    const button = document.createElement("button");
+    button.textContent = `${item.name} - ${item.price} gold`;
+    button.onclick = () => purchaseItem(item);
+    storyTextElement.appendChild(button);
+  });
+
+  const leaveButton = document.createElement("button");
+  leaveButton.textContent = "Leave";
+  leaveButton.onclick = () => continueJourney();
+  storyTextElement.appendChild(leaveButton);
+}
+
+// Purchase Items from Merchant
+function purchaseItem(item) {
+  if (gameState.player.gold >= item.price) {
+    gameState.player.gold -= item.price;
+
+    if (item.effect.hp) {
+      gameState.player.hp = Math.min(gameState.player.hp + item.effect.hp, gameState.player.maxHp);
+    }
+    if (item.effect.weapon) {
+      gameState.player.weapon = item.effect.weapon;
+    }
+
+    GameLog(`You bought ${item.name}. ${item.description}`);
+    PlayerStats();
+  }
+  else {
+    GameLog(`You don't have enough gold to buy ${item.name}.`);
+  }
+}
+
+function QuestList(){
+  const output2 = document.getElementById("output2");
+  output2.innerHTML = "";
+
+  quests.forEach((quest)=>{
+    const questDiv = document.createElement("div");
+    questDiv.classList.add("quest");
+
+    questDiv.innerHTML = `
+      <h4>${quest.name}</h4>
+      <p>${quest.description}</p>
+      <p><strong>Status:</strong> ${quest.status}</p>
+      <p><strong>Reward:</strong> ${quest.reward}</p>
+    `;
+
+    output2.appendChild(questDiv); 
+  });
+}
+document.getElementById("QuestList").onclick = QuestList;
+
+function inventory(){
+}
 
 
+
+function character(){
+  const output2 = document.getElementById("output2");
+  output2.innerHTML = "";
+}
+document.getElementById("character").onclick = character;
+
+// Start the Game
+function startGame() {
+  playBackgroundMusic();
+  StoryText("You stand at the entrance of a dark cave. Do you want to enter?", () => {
+    addChoiceButtons(["Yes", "No"], (choice) => {
+      if (choice === "Yes") {
+        enterCave();
+      } 
+      else {
+        StoryText("Maybe next time then. The adventure ends here.");
+      }
+    });
+  });
+}
 
 // Enter the Cave
 function enterCave() {
@@ -180,42 +298,6 @@ function meetMerchant() {
   StoryText("You meet a friendly merchant. He offers you items for sale. What would you like to buy?", () => {
     displayMerchantItems();
   });
-}
-
-// Display Merchant's Items
-function displayMerchantItems() {
-  storyTextElement.innerHTML += "<br><br><strong>Items for Sale:</strong><br>";
-  merchantItems.forEach((item) => {
-    const button = document.createElement("button");
-    button.textContent = `${item.name} - ${item.price} gold`;
-    button.onclick = () => purchaseItem(item);
-    storyTextElement.appendChild(button);
-  });
-
-  const leaveButton = document.createElement("button");
-  leaveButton.textContent = "Leave";
-  leaveButton.onclick = () => continueJourney();
-  storyTextElement.appendChild(leaveButton);
-}
-
-// Purchase Items from Merchant
-function purchaseItem(item) {
-  if (gameState.player.gold >= item.price) {
-    gameState.player.gold -= item.price;
-
-    if (item.effect.hp) {
-      gameState.player.hp = Math.min(gameState.player.hp + item.effect.hp, gameState.player.maxHp);
-    }
-    if (item.effect.weapon) {
-      gameState.player.weapon = item.effect.weapon;
-    }
-
-    GameLog(`You bought ${item.name}. ${item.description}`);
-    PlayerStats();
-  }
-  else {
-    GameLog(`You don't have enough gold to buy ${item.name}.`);
-  }
 }
 
 // Continue Journey
@@ -359,63 +441,35 @@ function gotTheKey(){
 }
 
 function toTheDoor(){
-  StoryText("You try the key on the door and it worked, you are finally out of the cave Hooray!!!", () => {
+  StoryText("You try the key on the door and it worked Hooray!!!", () => {
+    addChoiceButtons(["Next"], ()=>{
+      demonDog();
+    });
   });
 }
 
-// Battle Logic
-function startBattle(enemy, onVictory) {
-  const battleInterval = setInterval(() => {
-    const playerDamage = Math.floor(Math.random() * 10) + 1;
-    const enemyDamage = Math.floor(Math.random() * enemy.damage);
-
-    enemy.hp = Math.max(0, enemy.hp - playerDamage);
-    gameState.player.hp = Math.max(0, gameState.player.hp - enemyDamage);
-
-    GameLog(`You dealt ${playerDamage} damage. The enemy dealt ${enemyDamage} damage.`);
-    PlayerStats();
-
-    if (enemy.hp <= 0) {
-      clearInterval(battleInterval);
-      enemy.hp = enemy.maxHp;
-      onVictory();
-    }
-
-    if (gameState.player.hp <= 0) {
-      clearInterval(battleInterval);
-      StoryText("You were defeated. Game over.");
-    }
-  }, 1000);
-}
-
-// Display Player Stats
-function PlayerStats() {
-  playerHpElement.textContent = `HP: ${gameState.player.hp}/${gameState.player.maxHp}`;
-  document.getElementById("playerGold").textContent = `Gold: ${gameState.player.gold}`;
-}
-
-// Log Game Events
-function GameLog(message) {
-  const logEntry = document.createElement("p");
-  logEntry.textContent = message;
-  gameLog.appendChild(logEntry);
-
-  // Automatically clear the log after 5 seconds (adjust time as needed)
-  setTimeout(() => {
-    logEntry.remove(); // Removes this specific log entry
-  }, 5000);
-}
-
-// Add Choice Buttons
-function addChoiceButtons(choices, callback) {
-  storyTextElement.innerHTML += "<br>";
-  choices.forEach((choice) => {
-    const button = document.createElement("button");
-    button.textContent = choice;
-    button.onclick = () => {
-      storyTextElement.innerHTML = "";
-      callback(choice);
-    };
-    storyTextElement.appendChild(button);
+function demonDog(){
+  StoryText("As you enter There was a demon wolf in front of you", () => {
+    startBattle(gameState.enemies.goblin, () => {
+      StoryText("You defeated the the demon dog. you see something shining in the stomach of it.", () => {
+        addChoiceButtons(["Collect it", "Next"], (choice) => {
+          if (choice.toLowerCase() === "Next") { // Case-insensitive check
+            GameLog("You have collected a mana core.");
+            riddle2();
+          } 
+          else {
+            GameLog("Wrong answer! Try again.");
+            riddle1(); // Reload the question
+          }
+        });
+        gameState.player.hp += 10;
+        GameLog("You earned some food!");
+        PlayerStats();
+        addChoiceButtons(["Next"], ()=>{
+          demonDog();
+        });
+      });
+    });
   });
 }
+

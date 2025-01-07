@@ -1,6 +1,6 @@
 # Project description
 
-this is a  text-base RPG/survival game, there will be two kinds of ending, you get out of the cave alive or you dead so make your chooses carefully.
+this is a  text-base RPG/survival game, there will be three kinds of ending, you get out of the cave alive and you get to save your lost friend or you die so make your chooses carefully.
 
 # Need to have
 
@@ -11,7 +11,7 @@ this is a  text-base RPG/survival game, there will be two kinds of ending, you g
 -two types of endings
 
 # Nice to have
-- generate random NPC
+- generate some NPC to interact with along the way
 - musics and sound effect
 - be able to earn money in the game
 - make some spots for fishing
