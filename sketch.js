@@ -8,6 +8,12 @@ let gameState = {
     level: 1,
     maxLevel: 20
   },
+  stats:{
+    strenght: 10,
+    agility: 8,
+    speed: 7,
+    charisma: 9,
+  },
   enemies: {
     goblin: { hp: 100, maxHp: 100, damage: 5, reward: 30 },
     demonDog: { hp: 150, maxHp: 150, damage: 5, reward: 45 },
@@ -23,6 +29,25 @@ const merchantItems = [
   { name: "Health Potion", price: 20, effect: { hp: 20 }, description: "Restores 20 HP." },
   { name: "Water", price: 5, effect: { hp: 5 }, description: "Restores 5 HP." },
   { name: "Food", price: 10, effect: { hp: 10 }, description: "Restores 10 HP." },
+];
+
+// quest list
+const quests = [
+  {
+    name: "Find the Magic Crystal",
+    description: "Search the ancient cave for the magical crystal to save your village.",
+    reward: "100 Gold",
+  },
+  {
+    name: "Rescue the child",
+    description: "Help the child escape from goblins.",
+    reward: "Potion of Strength",
+  },
+  {
+    name: "Defeat the Goblin King",
+    description: "Defeat the Goblin King.",
+    reward: "Rare Sword",
+  },
 ];
 
 // HTML Elements
@@ -47,6 +72,27 @@ function playBackgroundMusic() {
     music.play();
   }
 }
+
+function QuestList(){
+  const output2 = document.getElementById("output2");
+  output2.innerHTML = "";
+
+  quests.forEach((quest)=>{
+    const questDiv = document.createElement("div");
+    questDiv.classList.add("quest");
+
+    questDiv.innerHTML = `
+      <h4>${quest.name}</h4>
+      <p>${quest.description}</p>
+      <p><strong>Status:</strong> ${quest.status}</p>
+      <p><strong>Reward:</strong> ${quest.reward}</p>
+    `;
+
+    output2.appendChild(questDiv); 
+  })
+}
+
+document.getElementById("QuestList").onclick = QuestList;
 
 // Start the Game
 function startGame() {
