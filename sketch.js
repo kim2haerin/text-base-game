@@ -5,8 +5,6 @@ let gameState = {
     hp: 100,
     maxHp: 500,
     gold: 10,
-    level: 1,
-    maxLevel: 20,
     weapon: "fist"
   },
   stats:{
@@ -451,22 +449,34 @@ function toTheDoor(){
 function demonDog(){
   StoryText("As you enter There was a demon wolf in front of you", () => {
     startBattle(gameState.enemies.goblin, () => {
+      gameState.player.gold += 10;
       StoryText("You defeated the the demon dog. you see something shining in the stomach of it.", () => {
         addChoiceButtons(["Collect it", "Next"], (choice) => {
-          if (choice.toLowerCase() === "Next") { // Case-insensitive check
-            GameLog("You have collected a mana core.");
-            riddle2();
+          if (choice.toLowerCase() === "collect it") { // Case-insensitive check
+            gameState.player.hp += 20;
+            GameLog("You have collected a mana core, this mana core gives you 20 HP.");
+            Knight();
           } 
           else {
-            GameLog("Wrong answer! Try again.");
-            riddle1(); // Reload the question
+            GameLog("let's continue then");
+            addChoiceButtons(["Next"], ()=>{
+              Knight();
+            });
           }
         });
-        gameState.player.hp += 10;
-        GameLog("You earned some food!");
-        PlayerStats();
+      });
+    });
+  });
+}
+
+function Knight(){
+  StoryText("As you continue further you see a knight on the ground, he look injured",()=>{
+    addChoiceButtons(["Next"], ()=>{
+      StoryText("Knight: Help, please");
+      addChoiceButtons(["Next"], ()=>{
+        StoryText("You get close to him and ask him what happened");
         addChoiceButtons(["Next"], ()=>{
-          demonDog();
+          StoryText("Kinght: This cave...there is something wrong with it, there are an ");
         });
       });
     });
