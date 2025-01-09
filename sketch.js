@@ -13,20 +13,19 @@ let gameState = {
     speed: 7,
     charisma: 9,
   },
-
-  inventory:{
-    manaCore: 0,
-    food:0,
-    water:0,
-    luminusCrystal:5,
-    manaPotion: 2,
-  },
   enemies: {
     goblin: { hp: 100, maxHp: 100, damage: 5, reward: 30 },
     demonDog: { hp: 150, maxHp: 150, damage: 5, reward: 45 },
     slime: { hp: 50, maxHp: 50, damage: 5, reward: 20 },
     Golem: { hp: 100, maxHp: 70, damage: 3, reward: 50 },
     Minataur: { hp: 150, maxHp: 150, damage: 3, reward: 100 },
+  },
+  inventory: {
+    manaCore: 0,
+    food: 0,
+    water: 0,
+    luminousCrystal: 5,
+    manaPotion: 2,
   },
 };
 
@@ -57,12 +56,13 @@ const quests = [
   },
 ];
 
-function statusLevelUp(){
-  if(weapon==="sword"){
-    strenght: 15;
+// Update Strength Based on Weapon
+function statusLevelUp() {
+  if (gameState.player.weapon === "sword") {
+    gameState.stats.strength = 15;
   }
-  else if(weapon==="rare sword"){
-    strenght: 30;
+  else if (gameState.player.weapon === "rare sword") {
+    gameState.stats.strength = 30;
   }
 }
 
@@ -219,12 +219,36 @@ function QuestList(){
     `;
 
     output2.appendChild(questDiv); 
+
+    const closeButton = document.createElement("button");
+    closeButton.textContent = "Close Quest list";
+    closeButton.onclick = () => output2.innerHTML = "";
+    output2.appendChild(closeButton);
   });
 }
 document.getElementById("QuestList").onclick = QuestList;
 
-function inventory(){
+
+// Inventory Management
+function inventory() {
+  const output2 = document.getElementById("output2");
+  output2.innerHTML = "<h3>Inventory</h3>";
+
+  Object.keys(gameState.inventory).forEach((item) => {
+    const itemDiv = document.createElement("div");
+    itemDiv.textContent = `${item.charAt(0).toUpperCase() + item.slice(1)}: ${gameState.inventory[item]}`;
+    output2.appendChild(itemDiv);
+  });
+
+  const closeButton = document.createElement("button");
+  closeButton.textContent = "Close Inventory";
+  closeButton.onclick = () => output2.innerHTML = "";
+  output2.appendChild(closeButton);
 }
+
+document.getElementById("inventoryButton").onclick = inventory;
+
+
 
 
 
@@ -470,16 +494,25 @@ function demonDog(){
 }
 
 function Knight(){
-  StoryText("As you continue further you see a knight on the ground, he look injured",()=>{
+  StoryText("As you continue further you see a knight on the ground, he look injured.",()=>{
     addChoiceButtons(["Next"], ()=>{
       StoryText("Knight: Help, please");
       addChoiceButtons(["Next"], ()=>{
-        StoryText("You get close to him and ask him what happened");
+        StoryText("You get close to him and ask him what happened.");
         addChoiceButtons(["Next"], ()=>{
-          StoryText("Kinght: This cave...there is something wrong with it, there are an ");
+          StoryText("Kinght: This cave...there is something wrong with it, the moster have became stronger all of the sudden.");
+          addChoiceButtons(["Next"], ()=>{
+            StoryText("you give him a bottle of mana potion.");
+          });
         });
       });
     });
   });
 }
+
+
+
+
+
+
 
