@@ -2,9 +2,9 @@
 let gameState = {
   player: {
     name: "Hero",
-    hp: 100,
+    hp: 150,
     maxHp: 500,
-    gold: 10,
+    gold: 20,
     weapon: "fist"
   },
   stats:{
@@ -22,10 +22,7 @@ let gameState = {
   },
   inventory: {
     manaCore: 0,
-    food: 0,
-    water: 0,
-    luminousCrystal: 5,
-    manaPotion: 2,
+    HealthPotion: 0,
   },
 };
 
@@ -37,35 +34,6 @@ const merchantItems = [
   { name: "Food", price: 10, effect: { hp: 10 }, description: "Restores 10 HP." },
 ];
 
-// quest list
-const quests = [
-  {
-    name: "Find the Magic Crystal",
-    description: "Search the ancient cave for the magical crystal to save your village.",
-    reward: "100 Gold",
-  },
-  {
-    name: "Rescue the child",
-    description: "Help the child escape from goblins.",
-    reward: "Potion of Strength",
-  },
-  {
-    name: "Defeat the Goblin King",
-    description: "Defeat the Goblin King.",
-    reward: "Rare Sword",
-  },
-];
-
-// Update Strength Based on Weapon
-function statusLevelUp() {
-  if (gameState.player.weapon === "sword") {
-    gameState.stats.strength = 15;
-  }
-  else if (gameState.player.weapon === "rare sword") {
-    gameState.stats.strength = 30;
-  }
-}
-
 // HTML Elements
 let storyTextElement, gameLog, playerHpElement, input;
 
@@ -75,8 +43,7 @@ function setup() {
   // Connect HTML elements
   storyTextElement = document.getElementById("storyText");
   gameLog = document.getElementById("output1");
-  input = document.getElementById("output2");
-  playerHpElement = document.getElementById("playerHp");
+  //playerHpElement = document.getElementById("playerHp");
   PlayerStats();
 }
 
@@ -118,6 +85,7 @@ function startBattle(enemy, onVictory) {
 function PlayerStats() {
   playerHpElement.textContent = `HP: ${gameState.player.hp}/${gameState.player.maxHp}`;
   document.getElementById("playerGold").textContent = `Gold: ${gameState.player.gold}`;
+  //document.getElementById("HealthPotion").textContent = `HealthPotion: ${gameState.inventory.HealthPotion}`;
 }
 
 // Log Game Events
@@ -202,44 +170,18 @@ function purchaseItem(item) {
   }
 }
 
-function QuestList(){
-  const output2 = document.getElementById("output2");
-  output2.innerHTML = "";
-
-  quests.forEach((quest)=>{
-    const questDiv = document.createElement("div");
-    questDiv.classList.add("quest");
-
-    questDiv.innerHTML = `
-      <h4>${quest.name}</h4>
-      <p>${quest.description}</p>
-      <p><strong>Status:</strong> ${quest.status}</p>
-      <p><strong>Reward:</strong> ${quest.reward}</p>
-    `;
-
-    output2.appendChild(questDiv); 
-
-    const closeButton = document.createElement("button");
-    closeButton.textContent = "Close Quest list";
-    closeButton.onclick = () => output2.innerHTML = "";
-    output2.appendChild(closeButton);
-  });
-}
-document.getElementById("QuestList").onclick = QuestList;
-
-
 // Inventory Management
 function inventory() {
-  const output2 = document.getElementById("output2");
+  const playerState = document.getElementById("playerState");
 
   // Check if inventory is already open
-  if (output2.innerHTML.trim() !== "") {
-    output2.innerHTML = ""; // Close inventory if already open
+  if (playerState.innerHTML.trim() !== "") {
+    playerState.innerHTML = ""; // Close inventory if already open
     return;
   }
 
   // Display inventory
-  output2.innerHTML = "<h3>Inventory</h3>";
+  playerState.innerHTML = "<h3>Inventory</h3>";
 
   Object.keys(gameState.inventory).forEach((item) => {
     const itemDiv = document.createElement("div");
@@ -254,18 +196,13 @@ function inventory() {
 }
 
 // Bind the "Inventory" button to the inventory function
-document.getElementById("inventory").onclick = inventory;
-
-
-
-
-
+//document.getElementById("inventory").onclick = inventory;
 
 function character(){
-  const output2 = document.getElementById("output2");
-  output2.innerHTML = "";
+  const playerState = document.getElementById("playerState");
+  playerState.innerHTML = "";
 }
-document.getElementById("character").onclick = character;
+//document.getElementById("character").onclick = character;
 
 // Start the Game
 function startGame() {
@@ -349,7 +286,7 @@ function saveChild() {
   StoryText("You run to the goblin to save the boy.", () => {
     startBattle(gameState.enemies.goblin, () => {
       StoryText("You defeated the goblin. the kid was so greatful of your help he gave you some food.", () => {
-        gameState.player.hp += 10;
+        gameState.player.hp += 50;
         GameLog("You earned some food!");
         PlayerStats();
         addChoiceButtons(["Next"], ()=>{
@@ -486,8 +423,8 @@ function demonDog(){
       StoryText("You defeated the the demon dog. you see something shining in the stomach of it.", () => {
         addChoiceButtons(["Collect it", "Next"], (choice) => {
           if (choice.toLowerCase() === "collect it") { // Case-insensitive check
-            gameState.player.hp += 20;
-            GameLog("You have collected a mana core, this mana core gives you 20 HP.");
+            gameState.inventory.gold += 100;
+            GameLog("You have collected a mana core, you can sell it for 35 Gold coins.");
             Knight();
           } 
           else {
@@ -502,100 +439,102 @@ function demonDog(){
   });
 }
 
-  function Knight() {
-    StoryText("As you continue further, you see a knight on the ground. He looks injured.", () => {
-      addChoiceButtons(["Next"], () => {
-        StoryText("Knight: Help, please...", () => {
-          addChoiceButtons(["Next"], () => {
-            StoryText("You get close to him and ask what happened.", () => {
-              addChoiceButtons(["Next"], () => {
-                StoryText(
-                  "Knight: This cave... something is wrong with it. The monsters have become stronger all of a sudden.",
-                  () => {
-                    if (gameState.inventory.potions > 0) {
-                      // Player has a potion
-                      addChoiceButtons(["Give mana potion"], () => {
-                        gameState.inventory.potions -= 1; // Deduct potion
-                        GameLog("You gave the knight a mana potion.");
-                        StoryText(
-                          "The knight drinks the mana potion and recovers some strength. 'Thank you,' he says, 'take this as a token of my gratitude.' He hands you a mysterious amulet.",
-                          () => {
-                            gameState.player.gold += 50; // Reward player
-                            GameLog("You received 50 gold and a mysterious amulet.");
-                            PlayerStats();
-                          }
-                        );
-                      });
-                    } else {
-                      // Player needs to find ingredients
-                      addChoiceButtons(["Look for ingredients"], () => {
-                        StoryText(
-                          "You decided to search for ingredients to make a mana potion.",
-                          findIngredients
-                        );
-                      });
-                    }
-                  }
-                );
-              });
+function Knight() {
+  StoryText("As you continue further, you see a knight on the ground. He looks injured.", () => {
+    addChoiceButtons(["Next"], () => {
+      StoryText("Knight: Help, please...", () => {
+        addChoiceButtons(["Next"], () => {
+          StoryText("You get close to him and ask what happened.", () => {
+            addChoiceButtons(["Next"], () => {
+              StoryText("Knight: This cave... something is wrong with it. The monsters have become stronger all of a sudden.",() => {
+                if (gameState.inventory.HealthPotion > 0) {
+                  // Player has a potion
+                  addChoiceButtons(["Give Health potion"], () => {
+                    gameState.inventory.HealthPotion -= 1; // Deduct potion
+                    GameLog("You gave the knight a health potion.");
+                    StoryText(
+                      "The knight drinks the Health potion and recovers some strength. 'Thank you,' he says, 'take this as a token of my gratitude.' He hands you a mysterious amulet.",
+                      () => {
+                        gameState.player.gold += 50; // Reward player
+                        GameLog("You received 50 gold and a mysterious amulet.");
+                        PlayerStats();
+                      }
+                    );
+                  });
+                  addChoiceButtons(["Next"], ()=>{
+                    Knight();
+                  });
+                }
+                else {
+                  // Player needs to find ingredients
+                  addChoiceButtons(["Look for ingredients"], () => {
+                    StoryText(
+                      "You decided to search for ingredients to make a Health potion.",
+                      findIngredients
+                    );
+                  });
+                }
+              }
+              );
             });
           });
         });
       });
     });
-  }
+  });
+}
   
-  function findIngredients() {
-    StoryText(
-      "You venture deeper into the cave to look for the ingredients. Suddenly, a monster appears!",
-      () => {
-        // Start a battle with a random monster
-        const randomMonster = {
-          name: "Cave Beast",
-          hp: 60,
-          damage: 15,
-          reward: 10,
-        };
+function findIngredients() {
+  StoryText(
+    "You venture deeper into the cave to look for the ingredients. Suddenly, a monster appears!",
+    () => {
+      // Start a battle with a random monster
+      const randomMonster = {
+        name: "Cave Beast",
+        hp: 60,
+        damage: 15,
+        reward: 10,
+      };
   
-        startBattle(randomMonster, () => {
-          StoryText(
-            "You defeated the Cave Beast and found some herbs nearby. These could be used to make a mana potion.",
-            () => {
-              GameLog("You obtained potion ingredients.");
-              craftPotion();
-            }
-          );
-        });
-      }
-    );
-  }
-  
-  function craftPotion() {
-    StoryText("You successfully craft a mana potion using the ingredients you found.", () => {
-      gameState.inventory.potions += 1; // Add crafted potion
-      GameLog("You crafted a mana potion.");
-      addChoiceButtons(["Return to the knight"], () => {
-        returnToKnight();
-      });
-    });
-  }
-  
-  function returnToKnight() {
-    StoryText(
-      "You return to the knight with the mana potion. He drinks it and recovers some strength.",
-      () => {
-        GameLog("You gave the knight a mana potion.");
+      startBattle(randomMonster, () => {
         StoryText(
-          "'Thank you,' he says. 'Take this as a token of my gratitude.' He hands you a mysterious amulet.",
+          "You defeated the Cave Beast and found some herbs nearby. These could be used to make a Health potion.",
           () => {
-            gameState.player.gold += 50; // Reward player
-            GameLog("You received 50 gold and a mysterious amulet.");
-            PlayerStats();
+            GameLog("You obtained potion ingredients.");
+            craftPotion();
           }
         );
-      }
-    );
-  }
+      });
+    }
+  );
+}
+  
+function craftPotion() {
+  StoryText("You successfully craft a Health potion using the ingredients you found.", () => {
+    gameState.inventory.HealthPotion += 1; // Add crafted potion
+    GameLog("You crafted a Health potion.");
+    addChoiceButtons(["Return to the knight"], () => {
+      returnToKnight();
+    });
+  });
+}
+  
+function returnToKnight() {
+  StoryText(
+    "You return to the knight with the Health potion. He drinks it and recovers some strength.",
+    () => {
+      GameLog("You gave the knight a Health potion.");
+      StoryText(
+        "'Thank you,' he says. 'Take this as a token of my gratitude.' He hands you a mysterious amulet.",
+        () => {
+          gameState.player.gold += 50; // Reward player
+          GameLog("You received 50 gold and a mysterious amulet.");
+          PlayerStats();
+        }
+      );
+    }
+  );
+}
   
 
 
