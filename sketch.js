@@ -89,7 +89,6 @@ function playBackgroundMusic() {
   }
 }
 
-
 // Battle Logic
 function startBattle(enemy, onVictory) {
   const battleInterval = setInterval(() => {
@@ -232,6 +231,14 @@ document.getElementById("QuestList").onclick = QuestList;
 // Inventory Management
 function inventory() {
   const output2 = document.getElementById("output2");
+
+  // Check if inventory is already open
+  if (output2.innerHTML.trim() !== "") {
+    output2.innerHTML = ""; // Close inventory if already open
+    return;
+  }
+
+  // Display inventory
   output2.innerHTML = "<h3>Inventory</h3>";
 
   Object.keys(gameState.inventory).forEach((item) => {
@@ -246,7 +253,9 @@ function inventory() {
   output2.appendChild(closeButton);
 }
 
-document.getElementById("inventoryButton").onclick = inventory;
+// Bind the "Inventory" button to the inventory function
+document.getElementById("inventory").onclick = inventory;
+
 
 
 
@@ -493,22 +502,102 @@ function demonDog(){
   });
 }
 
-function Knight(){
-  StoryText("As you continue further you see a knight on the ground, he look injured.",()=>{
-    addChoiceButtons(["Next"], ()=>{
-      StoryText("Knight: Help, please");
-      addChoiceButtons(["Next"], ()=>{
-        StoryText("You get close to him and ask him what happened.");
-        addChoiceButtons(["Next"], ()=>{
-          StoryText("Kinght: This cave...there is something wrong with it, the moster have became stronger all of the sudden.");
-          addChoiceButtons(["Next"], ()=>{
-            StoryText("you give him a bottle of mana potion.");
+  function Knight() {
+    StoryText("As you continue further, you see a knight on the ground. He looks injured.", () => {
+      addChoiceButtons(["Next"], () => {
+        StoryText("Knight: Help, please...", () => {
+          addChoiceButtons(["Next"], () => {
+            StoryText("You get close to him and ask what happened.", () => {
+              addChoiceButtons(["Next"], () => {
+                StoryText(
+                  "Knight: This cave... something is wrong with it. The monsters have become stronger all of a sudden.",
+                  () => {
+                    if (gameState.inventory.potions > 0) {
+                      // Player has a potion
+                      addChoiceButtons(["Give mana potion"], () => {
+                        gameState.inventory.potions -= 1; // Deduct potion
+                        GameLog("You gave the knight a mana potion.");
+                        StoryText(
+                          "The knight drinks the mana potion and recovers some strength. 'Thank you,' he says, 'take this as a token of my gratitude.' He hands you a mysterious amulet.",
+                          () => {
+                            gameState.player.gold += 50; // Reward player
+                            GameLog("You received 50 gold and a mysterious amulet.");
+                            PlayerStats();
+                          }
+                        );
+                      });
+                    } else {
+                      // Player needs to find ingredients
+                      addChoiceButtons(["Look for ingredients"], () => {
+                        StoryText(
+                          "You decided to search for ingredients to make a mana potion.",
+                          findIngredients
+                        );
+                      });
+                    }
+                  }
+                );
+              });
+            });
           });
         });
       });
     });
-  });
-}
+  }
+  
+  function findIngredients() {
+    StoryText(
+      "You venture deeper into the cave to look for the ingredients. Suddenly, a monster appears!",
+      () => {
+        // Start a battle with a random monster
+        const randomMonster = {
+          name: "Cave Beast",
+          hp: 60,
+          damage: 15,
+          reward: 10,
+        };
+  
+        startBattle(randomMonster, () => {
+          StoryText(
+            "You defeated the Cave Beast and found some herbs nearby. These could be used to make a mana potion.",
+            () => {
+              GameLog("You obtained potion ingredients.");
+              craftPotion();
+            }
+          );
+        });
+      }
+    );
+  }
+  
+  function craftPotion() {
+    StoryText("You successfully craft a mana potion using the ingredients you found.", () => {
+      gameState.inventory.potions += 1; // Add crafted potion
+      GameLog("You crafted a mana potion.");
+      addChoiceButtons(["Return to the knight"], () => {
+        returnToKnight();
+      });
+    });
+  }
+  
+  function returnToKnight() {
+    StoryText(
+      "You return to the knight with the mana potion. He drinks it and recovers some strength.",
+      () => {
+        GameLog("You gave the knight a mana potion.");
+        StoryText(
+          "'Thank you,' he says. 'Take this as a token of my gratitude.' He hands you a mysterious amulet.",
+          () => {
+            gameState.player.gold += 50; // Reward player
+            GameLog("You received 50 gold and a mysterious amulet.");
+            PlayerStats();
+          }
+        );
+      }
+    );
+  }
+  
+
 
 
 
