@@ -43,7 +43,7 @@ function setup() {
   // Connect HTML elements
   storyTextElement = document.getElementById("storyText");
   gameLog = document.getElementById("output1");
-  //playerHpElement = document.getElementById("playerHp");
+  playerHpElement = document.getElementById("playerHp");
   PlayerStats();
 }
 
@@ -84,8 +84,7 @@ function startBattle(enemy, onVictory) {
 // Display Player Stats
 function PlayerStats() {
   playerHpElement.textContent = `HP: ${gameState.player.hp}/${gameState.player.maxHp}`;
-  document.getElementById("playerGold").textContent = `Gold: ${gameState.player.gold}`;
-  //document.getElementById("HealthPotion").textContent = `HealthPotion: ${gameState.inventory.HealthPotion}`;
+  document.getElementById("playerGold").textContent = `Gold: ${gameState.player.gold}`
 }
 
 // Log Game Events
@@ -317,7 +316,7 @@ function puzzleNumber(){
 }
 
 function portal(){
-  StoryText("you have no choose put to go in the portal",()=>{
+  StoryText("You have no choose put to go in the portal",()=>{
     addChoiceButtons(["Next"], ()=>{
       theRoom();
     });
@@ -325,7 +324,7 @@ function portal(){
 }
 
 function theRoom(){
-  StoryText("you are in a room with a lot of coloful crystal and at the end of the room you see a key",()=>{
+  StoryText("You are in a room with a lot of coloful crystal and at the end of the room you see a key",()=>{
     addChoiceButtons(["Next"], ()=>{
       miniGame();
     });
@@ -333,7 +332,7 @@ function theRoom(){
 }
 
 function miniGame(){
-  StoryText("to get the key you need to find four good answers to my riddle challenge, are you ready?",()=>{
+  StoryText("To get the key you need to find four good answers to my riddle challenge, are you ready?",()=>{
     addChoiceButtons(["Next"], ()=>{
       riddle1();
     });
@@ -356,7 +355,7 @@ function riddle1() {
 }
 
 function riddle2() {
-  StoryText("the next question is What has keys but can’t open locks?", () => {
+  StoryText("The next question is What has keys but can’t open locks?", () => {
     addChoiceButtons(["Safe", "Piano", "Keyboard", "Treasure Chest"], (choice) => {
       if (choice.toLowerCase() === "keyboard") { // Case-insensitive check
         GameLog("Correct! Moving on to the next riddle.");
@@ -371,7 +370,7 @@ function riddle2() {
 }
 
 function riddle3() {
-  StoryText("the next question is The more you take from me, the bigger I get. What am I?", () => {
+  StoryText("The next question is The more you take from me, the bigger I get. What am I?", () => {
     addChoiceButtons(["Memory", "Hole", "Mountain", "Puzzle"], (choice) => {
       if (choice.toLowerCase() === "hole") { // Case-insensitive check
         GameLog("Correct! Moving on to the next riddle.");
@@ -386,7 +385,7 @@ function riddle3() {
 }
 
 function riddle4() {
-  StoryText("good job you did well so far, the last question is What has one eye but can’t see?", () => {
+  StoryText("Good job you did well so far, the last question is What has one eye but can’t see?", () => {
     addChoiceButtons(["Cyclops", "Storm", "Mirror", "Needle"], (choice) => {
       if (choice.toLowerCase() === "needle") { // Case-insensitive check
         GameLog("Correct! Moving on to the next riddle.");
@@ -428,7 +427,7 @@ function demonDog(){
             Knight();
           } 
           else {
-            GameLog("let's continue then");
+            GameLog("Let's continue then");
             addChoiceButtons(["Next"], ()=>{
               Knight();
             });
@@ -446,7 +445,7 @@ function Knight() {
         addChoiceButtons(["Next"], () => {
           StoryText("You get close to him and ask what happened.", () => {
             addChoiceButtons(["Next"], () => {
-              StoryText("Knight: This cave... something is wrong with it. The monsters have become stronger all of a sudden.",() => {
+              StoryText("Knight: This cave... something is wrong with it. The monsters have become stronger all of a sudden. (you want to help him but you have no Health potion)",() => {
                 if (gameState.inventory.HealthPotion > 0) {
                   // Player has a potion
                   addChoiceButtons(["Give Health potion"], () => {
@@ -474,8 +473,7 @@ function Knight() {
                     );
                   });
                 }
-              }
-              );
+              });
             });
           });
         });
@@ -485,8 +483,7 @@ function Knight() {
 }
   
 function findIngredients() {
-  StoryText(
-    "You venture deeper into the cave to look for the ingredients. Suddenly, a monster appears!",
+  StoryText("You venture deeper into the cave to look for the ingredients. Suddenly, a monster appears!",
     () => {
       // Start a battle with a random monster
       const randomMonster = {
@@ -497,8 +494,7 @@ function findIngredients() {
       };
   
       startBattle(randomMonster, () => {
-        StoryText(
-          "You defeated the Cave Beast and found some herbs nearby. These could be used to make a Health potion.",
+        StoryText("You defeated the Cave Beast and found some herbs nearby. These could be used to make a Health potion.",
           () => {
             GameLog("You obtained potion ingredients.");
             craftPotion();
@@ -530,12 +526,28 @@ function returnToKnight() {
           gameState.player.gold += 50; // Reward player
           GameLog("You received 50 gold and a mysterious amulet.");
           PlayerStats();
+          addChoiceButtons(["Next"], () => {
+            goHelp();
+          });
         }
       );
     }
   );
 }
   
+function goHelp(){
+  StoryText("I didn't came here alone, there are two peoples that continued ahead, please bring them back here, it's to dagerouse to continue.", () => {
+    addChoiceButtons(["Next"], () => {
+      secondMerchant();
+  });
+});
+}
+
+function secondMerchant() {
+  StoryText("You meet a friendly merchant. He offers you items for sale. What would you like to buy?", () => {
+    displayMerchantItems();
+  });
+}
 
 
 
