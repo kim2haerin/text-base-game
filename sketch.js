@@ -21,7 +21,6 @@ let gameState = {
     Minataur: { hp: 150, maxHp: 150, damage: 3, reward: 100 },
   },
   inventory: {
-    manaCore: 0,
     HealthPotion: 0,
   },
 };
@@ -56,6 +55,30 @@ function playBackgroundMusic() {
   }
 }
 
+function clapForHim(){
+  const effect = document.getElementById("bravo");
+  if (effect) {
+    effect.volume = 1;
+    effect.play();
+  }
+}
+
+function buttonClicking(){
+  const click = document.getElementById("click");
+  if (click) {
+    click.volume = 1;
+    click.play();
+  }
+}
+
+function gameOverSoundEffect(){
+  const lost = document.getElementById("gameOver");
+  if (lost) {
+    lost.volume = 1;
+    lost.play();
+  }
+}
+
 // Battle Logic
 function startBattle(enemy, onVictory) {
   const battleInterval = setInterval(() => {
@@ -76,6 +99,7 @@ function startBattle(enemy, onVictory) {
 
     if (gameState.player.hp <= 0) {
       clearInterval(battleInterval);
+      gameOverSoundEffect();
       StoryText("You were defeated. Game over.");
     }
   }, 1000);
@@ -84,7 +108,8 @@ function startBattle(enemy, onVictory) {
 // Display Player Stats
 function PlayerStats() {
   playerHpElement.textContent = `HP: ${gameState.player.hp}/${gameState.player.maxHp}`;
-  document.getElementById("playerGold").textContent = `Gold: ${gameState.player.gold}`
+  document.getElementById("playerGold").textContent = `Gold: ${gameState.player.gold}`;
+  //document.getElementById("healthPotion").textContent = `Health Potion: ${gameState.inventory.HealthPotion}`;
 }
 
 // Log Game Events
@@ -235,8 +260,8 @@ function enterCave() {
 // Left Path
 function leftPath() {
   StoryText("You venture down the left path and find a treasure chest! Inside, you find 50 gold!", () => {
-    gameState.player.gold += 50;
-    GameLog("You earned 50 gold!");
+    gameState.player.gold += 100;
+    GameLog("You earned 100 gold!");
     PlayerStats();
     addChoiceButtons(["Next"], ()=>{
       meetMerchant();
@@ -408,6 +433,7 @@ function gotTheKey(){
 }
 
 function toTheDoor(){
+  clapForHim();
   StoryText("You try the key on the door and it worked Hooray!!!", () => {
     addChoiceButtons(["Next"], ()=>{
       demonDog();
@@ -422,7 +448,7 @@ function demonDog(){
       StoryText("You defeated the the demon dog. you see something shining in the stomach of it.", () => {
         addChoiceButtons(["Collect it", "Next"], (choice) => {
           if (choice.toLowerCase() === "collect it") { // Case-insensitive check
-            gameState.inventory.gold += 100;
+            gameState.player.gold += 100;
             GameLog("You have collected a mana core, you can sell it for 35 Gold coins.");
             Knight();
           } 
@@ -539,14 +565,36 @@ function goHelp(){
   StoryText("I didn't came here alone, there are two peoples that continued ahead, please bring them back here, it's to dagerouse to continue.", () => {
     addChoiceButtons(["Next"], () => {
       secondMerchant();
+    });
   });
-});
 }
 
 function secondMerchant() {
-  StoryText("You meet a friendly merchant. He offers you items for sale. What would you like to buy?", () => {
+  StoryText("Merchand: Hello dear adventure, What would you like to buy?", () => {
     displayMerchantItems();
   });
+}
+
+function fithingTheGolem(){
+  StoryText("You venture deeper into the cave to look for the ingredients. Suddenly, a monster appears!",
+    () => {
+      // Start a battle with a random monster
+      const randomMonster = {
+        name: "Cave Beast",
+        hp: 80,
+        damage: 10,
+      };
+  
+      startBattle(randomMonster, () => {
+        StoryText("You defeated the crystal Golem and saw someone bleeding on the ground.",
+          () => {
+            GameLog("You obtained potion ingredients.");
+            craftPotion();
+          }
+        );
+      });
+    }
+  );
 }
 
 
