@@ -22,6 +22,7 @@ let gameState = {
   },
   inventory: {
     HealthPotion: 0,
+    manaCore:0,
   },
 };
 
@@ -31,6 +32,7 @@ const merchantItems = [
   { name: "Health Potion", price: 20, effect: { hp: 20 }, description: "Restores 20 HP." },
   { name: "Water", price: 5, effect: { hp: 5 }, description: "Restores 5 HP." },
   { name: "Food", price: 10, effect: { hp: 10 }, description: "Restores 10 HP." },
+  { name: "Exchange", price: 1, effect: { manaCore: 1 }, description: "Exchange 1 Mana core for 100 Gold." },
 ];
 
 // HTML Elements
@@ -110,6 +112,7 @@ function PlayerStats() {
   playerHpElement.textContent = `HP: ${gameState.player.hp}/${gameState.player.maxHp}`;
   document.getElementById("playerGold").textContent = `Gold: ${gameState.player.gold}`;
   //document.getElementById("healthPotion").textContent = `Health Potion: ${gameState.inventory.HealthPotion}`;
+  //document.getElementById("manaCore").textContent = `Mana core: ${gameState.inventory.manaCore}`;
 }
 
 // Log Game Events
@@ -182,10 +185,6 @@ function purchaseItem(item) {
     if (item.effect.hp) {
       gameState.player.hp = Math.min(gameState.player.hp + item.effect.hp, gameState.player.maxHp);
     }
-    if (item.effect.weapon) {
-      gameState.player.weapon = item.effect.weapon;
-    }
-
     GameLog(`You bought ${item.name}. ${item.description}`);
     PlayerStats();
   }
@@ -572,6 +571,9 @@ function goHelp(){
 function secondMerchant() {
   StoryText("Merchand: Hello dear adventure, What would you like to buy?", () => {
     displayMerchantItems();
+    addChoiceButtons(["Next"], () => {
+      fithingTheGolem();
+    });
   });
 }
 
@@ -579,17 +581,17 @@ function fithingTheGolem(){
   StoryText("You venture deeper into the cave to look for the ingredients. Suddenly, a monster appears!",
     () => {
       // Start a battle with a random monster
-      const randomMonster = {
-        name: "Cave Beast",
-        hp: 80,
+      const crystalGolem = {
+        name: "crystal Golem",
+        hp: 100,
         damage: 10,
       };
   
-      startBattle(randomMonster, () => {
-        StoryText("You defeated the crystal Golem and saw someone bleeding on the ground.",
+      startBattle(crystalGolem, () => {
+        StoryText("You see a crystal Golem in front of you and there's someone bleeding and in terrible shape on the ground, help him.",
           () => {
-            GameLog("You obtained potion ingredients.");
-            craftPotion();
+            GameLog("You obtained 100 gold.");
+            
           }
         );
       });
