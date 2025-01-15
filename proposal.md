@@ -14,8 +14,6 @@ this is a  text-base RPG/survival game, there will be three kinds of ending, you
 - generate some NPC to interact with along the way
 - musics and sound effect
 - be able to earn money in the game
-- make some spots for fishing
-- make some spot where you can cook food
 - make a gasha machine
 -add some side quests
   - it like a lottery machine
