@@ -52,7 +52,7 @@ function setup() {
 function playBackgroundMusic() {
   const music = document.getElementById("backgroundMusic");
   if (music) {
-    music.volume = 0.5;
+    music.volume = 0.3;
     music.play();
   }
 }
@@ -60,7 +60,7 @@ function playBackgroundMusic() {
 function clapForHim(){
   const effect = document.getElementById("bravo");
   if (effect) {
-    effect.volume = 1;
+    effect.volume = 0.5;
     effect.play();
   }
 }
@@ -68,7 +68,7 @@ function clapForHim(){
 function buttonClicking(){
   const click = document.getElementById("click");
   if (click) {
-    click.volume = 1;
+    click.volume = 0.5;
     click.play();
   }
 }
@@ -76,7 +76,15 @@ function buttonClicking(){
 function gameOverSoundEffect(){
   const lost = document.getElementById("gameOver");
   if (lost) {
-    lost.volume = 1;
+    lost.volume = 0.5;
+    lost.play();
+  }
+}
+
+function yaySoundEffect(){
+  const lost = document.getElementById("yay");
+  if (lost) {
+    lost.volume = 0.5;
     lost.play();
   }
 }
@@ -367,6 +375,7 @@ function riddle1() {
   StoryText("I’m light as a feather, yet the strongest person can’t hold me for five minutes. What am I?", () => {
     addChoiceButtons(["Breath", "Shadow", "Air", "Thought"], (choice) => {
       if (choice.toLowerCase() === "breath") { // Case-insensitive check
+        yaySoundEffect();
         GameLog("Correct! Moving on to the next riddle.");
         riddle2();
       } 
@@ -382,6 +391,7 @@ function riddle2() {
   StoryText("The next question is What has keys but can’t open locks?", () => {
     addChoiceButtons(["Safe", "Piano", "Keyboard", "Treasure Chest"], (choice) => {
       if (choice.toLowerCase() === "keyboard") { // Case-insensitive check
+        yaySoundEffect();
         GameLog("Correct! Moving on to the next riddle.");
         riddle3();
       } 
@@ -397,6 +407,7 @@ function riddle3() {
   StoryText("The next question is The more you take from me, the bigger I get. What am I?", () => {
     addChoiceButtons(["Memory", "Hole", "Mountain", "Puzzle"], (choice) => {
       if (choice.toLowerCase() === "hole") { // Case-insensitive check
+        yaySoundEffect();
         GameLog("Correct! Moving on to the next riddle.");
         riddle4();
       } 
@@ -412,6 +423,7 @@ function riddle4() {
   StoryText("Good job you did well so far, the last question is What has one eye but can’t see?", () => {
     addChoiceButtons(["Cyclops", "Storm", "Mirror", "Needle"], (choice) => {
       if (choice.toLowerCase() === "needle") { // Case-insensitive check
+        yaySoundEffect();
         GameLog("Correct! Moving on to the next riddle.");
         gotTheKey();
       } 

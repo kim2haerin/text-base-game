@@ -13,8 +13,6 @@
     <h1> The Caverns of Fate</h1>
     <div id="menu">
       <button onclick="startGame()">New Game</button>
-      <!---<button onclick="loadGame()">Load Game</button>
-      <button onclick="saveGame()">Save Game</button>-->
     </div>
     <div id="playerStats">
       <p></p>
@@ -29,7 +27,7 @@
       press new game to start.</div>
     <div id="output1"></div> 
     <audio id="backgroundMusic" loop>
-      <source src="sounds/backgroundMusic.mp3" type="audio/mp3">  
+      <source src="sounds/backgroundMusic.mp3" type="audio/mp3"> 
     </audio>
     <audio id="bravo">
       <source src="sounds/bravo.mp3" type="audio/mp3">
@@ -46,30 +44,6 @@
       <p></p>
       <span id="playerHp"> Mana Potion: 0</span>
     </div>
-    <!-- Gacha machine container -->
-   <iframe id="gachaContainer" src="gacha.html"></iframe>
-
-   <script>
-     const gachaContainer = document.getElementById("gachaContainer");
-     const showGachaButton = document.getElementById("showGacha");
- 
-     showGachaButton.onclick = () => {
-       gachaContainer.style.display = gachaContainer.style.display === "none" ? "block" : "none";
-     };
-   </script>
-    <h1>Welcome to the Gacha Machine</h1>
-    <div id="output"></div>
-    <button id="spinGacha">Spin Gacha</button>
-  
-    <script>
-      const rewards = ["Rare Sword", "Legendary Bow", "Epic Staff", "Common Shield", "Ultra Rare Wand"];
-  
-      document.getElementById("spinGacha").onclick = () => {
-        const output = document.getElementById("output");
-        const randomReward = rewards[Math.floor(Math.random() * rewards.length)];
-        output.textContent = `You got: ${randomReward}!`;
-      };
-    </script>
     <h4>Your goal is to  get out of the cave alive</h4> 
     <u><h1>Enjoy</h1></u>  
   </div>

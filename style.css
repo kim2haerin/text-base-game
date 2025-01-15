@@ -30,6 +30,7 @@ body {
 
 /* Buttons */
 button {
+    background: src(url(sounds/click.mp3)) no-repeat;
     margin: 10px;
     padding: 15px 30px;
     font-size: 18px;
