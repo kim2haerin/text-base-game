@@ -580,7 +580,7 @@ function secondMerchant() {
 function fithingTheGolem(){
   StoryText("You venture deeper into the cave to look for the ingredients. Suddenly, a monster appears!",
     () => {
-      // Start a battle with a random monster
+      // Start a battle with a crystal golem
       const crystalGolem = {
         name: "crystal Golem",
         hp: 100,

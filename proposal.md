@@ -15,11 +15,7 @@ this is a  text-base RPG/survival game, there will be three kinds of ending, you
 - musics and sound effect
 - be able to earn money in the game
 - make a gasha machine
--add some side quests
   - it like a lottery machine
-- you need to have gasha tickets to pull the gasha machine
-- save button
-   - you can save your progress in the game
-- make the quests
+-add some side quests
 - get rewards when the quests are complete
 - a multi choice game

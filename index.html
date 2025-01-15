@@ -46,8 +46,32 @@
       <p></p>
       <span id="playerHp"> Mana Potion: 0</span>
     </div>
+    <!-- Gacha machine container -->
+   <iframe id="gachaContainer" src="gacha.html"></iframe>
+
+   <script>
+     const gachaContainer = document.getElementById("gachaContainer");
+     const showGachaButton = document.getElementById("showGacha");
+ 
+     showGachaButton.onclick = () => {
+       gachaContainer.style.display = gachaContainer.style.display === "none" ? "block" : "none";
+     };
+   </script>
+    <h1>Welcome to the Gacha Machine</h1>
+    <div id="output"></div>
+    <button id="spinGacha">Spin Gacha</button>
+  
+    <script>
+      const rewards = ["Rare Sword", "Legendary Bow", "Epic Staff", "Common Shield", "Ultra Rare Wand"];
+  
+      document.getElementById("spinGacha").onclick = () => {
+        const output = document.getElementById("output");
+        const randomReward = rewards[Math.floor(Math.random() * rewards.length)];
+        output.textContent = `You got: ${randomReward}!`;
+      };
+    </script>
     <h4>Your goal is to  get out of the cave alive</h4> 
-    <u><h1>Enjoy</h1></u>
+    <u><h1>Enjoy</h1></u>  
   </div>
 </body>
 </html>
