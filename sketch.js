@@ -603,6 +603,7 @@ function fithingTheGolem(){
         StoryText("You see a crystal Golem in front of you and there's someone bleeding and in terrible shape on the ground, help him.",
           () => {
             GameLog("You obtained 100 gold.");
+            playerState();
             
           }
         );
