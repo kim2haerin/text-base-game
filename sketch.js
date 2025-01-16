@@ -4,6 +4,7 @@ let gameState = {
     name: "Hero",
     hp: 150,
     maxHp: 500,
+    manaCore: 0,
     gold: 20,
     weapon: "fist"
   },
@@ -22,9 +23,9 @@ let gameState = {
   },
   inventory: {
     HealthPotion: 0,
-    manaCore:0,
   },
 };
+
 
 
 // Merchant's Items
@@ -46,6 +47,7 @@ function setup() {
   gameLog = document.getElementById("output1");
   playerHpElement = document.getElementById("playerHp");
   PlayerStats();
+  //inventory();
 }
 
 // Play Background Music
@@ -119,12 +121,15 @@ function startBattle(enemy, onVictory) {
 function PlayerStats() {
   playerHpElement.textContent = `HP: ${gameState.player.hp}/${gameState.player.maxHp}`;
   document.getElementById("playerGold").textContent = `Gold: ${gameState.player.gold}`;
-  //document.getElementById("healthPotion").textContent = `Health Potion: ${gameState.inventory.HealthPotion}`;
-  //document.getElementById("manaCore").textContent = `Mana core: ${gameState.inventory.manaCore}`;
+  console.log(`Gold: ${gameState.player.gold}, Mana Core: ${gameState.player.manaCore}`);
 }
+
+//function inventory() {
+//}
 
 // Log Game Events
 function GameLog(message) {
+  console.log(message);
   const logEntry = document.createElement("p");
   logEntry.textContent = message;
   gameLog.appendChild(logEntry);
@@ -169,9 +174,9 @@ function StoryText(text, callback) {
   }, 50);
 }
 
-// Display Merchant's Items
 function displayMerchantItems() {
   storyTextElement.innerHTML += "<br><br><strong>Items for Sale:</strong><br>";
+
   merchantItems.forEach((item) => {
     const button = document.createElement("button");
     button.textContent = `${item.name} - ${item.price} gold`;
@@ -179,55 +184,51 @@ function displayMerchantItems() {
     storyTextElement.appendChild(button);
   });
 
+  // Add button for exchanging mana cores
+  const exchangeButton = document.createElement("button");
+  exchangeButton.textContent = "Exchange Mana Cores for Gold";
+  exchangeButton.onclick = exchangeManaCore;
+  storyTextElement.appendChild(exchangeButton);
+
   const leaveButton = document.createElement("button");
   leaveButton.textContent = "Leave";
   leaveButton.onclick = () => continueJourney();
   storyTextElement.appendChild(leaveButton);
 }
 
-// Purchase Items from Merchant
-function purchaseItem(item) {
-  if (gameState.player.gold >= item.price) {
-    gameState.player.gold -= item.price;
+// Exchange Mana Cores for Gold
+function exchangeManaCore() {
+  const exchangeRate = 10; // Example rate: 1 mana core = 10 gold
+  const manaCore = gameState.player.manaCore || 0;
+
+  if (manaCore > 0) {
+    const goldEarned = manaCore * exchangeRate;
+    gameState.player.gold += goldEarned;
+    gameState.player.manaCore = 0;
+
+    GameLog(`You exchanged ${manaCore} mana core for ${goldEarned} gold.`);
+    PlayerStats(); // Update player stats display
+  }
+  else {
+    GameLog("You don't have any mana cores to exchange.");
+  }
+}
+
+
+function ExchangeItem(gold) {
+  if (gameState.inventory.manaCore > 0) {
+    gameState.inventory.manaCore -= gameState.player.gold;
 
     if (item.effect.hp) {
       gameState.player.hp = Math.min(gameState.player.hp + item.effect.hp, gameState.player.maxHp);
     }
-    GameLog(`You bought ${item.name}. ${item.description}`);
-    PlayerStats();
+    GameLog(`You exchanged ${item.name}. ${item.description}`);
+    inventory();
   }
   else {
-    GameLog(`You don't have enough gold to buy ${item.name}.`);
+    GameLog(`You don't have any Mana core to exchange.`);
   }
 }
-
-// Inventory Management
-function inventory() {
-  const playerState = document.getElementById("playerState");
-
-  // Check if inventory is already open
-  if (playerState.innerHTML.trim() !== "") {
-    playerState.innerHTML = ""; // Close inventory if already open
-    return;
-  }
-
-  // Display inventory
-  playerState.innerHTML = "<h3>Inventory</h3>";
-
-  Object.keys(gameState.inventory).forEach((item) => {
-    const itemDiv = document.createElement("div");
-    itemDiv.textContent = `${item.charAt(0).toUpperCase() + item.slice(1)}: ${gameState.inventory[item]}`;
-    output2.appendChild(itemDiv);
-  });
-
-  const closeButton = document.createElement("button");
-  closeButton.textContent = "Close Inventory";
-  closeButton.onclick = () => output2.innerHTML = "";
-  output2.appendChild(closeButton);
-}
-
-// Bind the "Inventory" button to the inventory function
-//document.getElementById("inventory").onclick = inventory;
 
 function character(){
   const playerState = document.getElementById("playerState");
@@ -266,7 +267,7 @@ function enterCave() {
 
 // Left Path
 function leftPath() {
-  StoryText("You venture down the left path and find a treasure chest! Inside, you find 50 gold!", () => {
+  StoryText("You venture down the left path and find a treasure chest! Inside, you find 100 gold!", () => {
     gameState.player.gold += 100;
     GameLog("You earned 100 gold!");
     PlayerStats();
@@ -543,8 +544,8 @@ function findIngredients() {
 }
   
 function craftPotion() {
-  StoryText("You successfully craft a Health potion using the ingredients you found.", () => {
-    gameState.inventory.HealthPotion += 1; // Add crafted potion
+  StoryText("You successfully craft two Health potions using the ingredients you found.", () => {
+    gameState.inventory.HealthPotion += 2; // Add crafted potion
     GameLog("You crafted a Health potion.");
     addChoiceButtons(["Return to the knight"], () => {
       returnToKnight();
@@ -557,6 +558,7 @@ function returnToKnight() {
     "You return to the knight with the Health potion. He drinks it and recovers some strength.",
     () => {
       GameLog("You gave the knight a Health potion.");
+      gameState.inventory.HealthPotion - 1;
       StoryText(
         "'Thank you,' he says. 'Take this as a token of my gratitude.' He hands you a mysterious amulet.",
         () => {
@@ -604,12 +606,35 @@ function fithingTheGolem(){
           () => {
             GameLog("You obtained 100 gold.");
             playerState();
-            
+            addChoiceButtons(["Next"], () => {
+              TheApprentice();
+            });            
           }
         );
       });
     }
   );
+}
+
+function TheApprentice(){
+  StoryText("You run to him, he was wearing the knight uniform and armor so that most be the companion of the previous knight",
+    () => {
+      addChoiceButtons(["Next"], () => {
+        StoryText("He was unconscion so you carefully help him to get up and help him drink the last bottle of Health potion", () =>{
+          gameState.inventory.HealthPotion - 1;
+          addChoiceButtons(["Next"],()=>{
+            wakeUp();
+          });
+        });
+      });
+    }
+  );
+}
+
+function wakeUp(){
+  StoryText("After what felt like an eternity, he finally woke up",() =>{
+    
+  });
 }
 
 
