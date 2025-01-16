@@ -5,9 +5,9 @@ this is a  text-base RPG/survival game, there will be three kinds of ending, you
 # Need to have
 
 - the story
-- a store to buy things
+- a store to buy thingss
 - collect stuffs if you killed a monster like meat, magic stone, etc...
-- background
+- background image
 -two types of endings
 
 # Nice to have
