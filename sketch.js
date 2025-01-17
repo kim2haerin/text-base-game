@@ -8,12 +8,6 @@ let gameState = {
     gold: 20,
     weapon: "fist"
   },
-  stats:{
-    strenght: 10,
-    agility: 8,
-    speed: 7,
-    charisma: 9,
-  },
   enemies: {
     goblin: { hp: 100, maxHp: 100, damage: 5, reward: 30 },
     demonDog: { hp: 150, maxHp: 150, damage: 5, reward: 45 },
@@ -33,7 +27,6 @@ const merchantItems = [
   { name: "Health Potion", price: 20, effect: { hp: 20 }, description: "Restores 20 HP." },
   { name: "Water", price: 5, effect: { hp: 5 }, description: "Restores 5 HP." },
   { name: "Food", price: 10, effect: { hp: 10 }, description: "Restores 10 HP." },
-  { name: "Exchange", price: 1, effect: { manaCore: 1 }, description: "Exchange 1 Mana core for 100 Gold." },
 ];
 
 // HTML Elements
@@ -121,11 +114,7 @@ function startBattle(enemy, onVictory) {
 function PlayerStats() {
   playerHpElement.textContent = `HP: ${gameState.player.hp}/${gameState.player.maxHp}`;
   document.getElementById("playerGold").textContent = `Gold: ${gameState.player.gold}`;
-  console.log(`Gold: ${gameState.player.gold}, Mana Core: ${gameState.player.manaCore}`);
 }
-
-//function inventory() {
-//}
 
 // Log Game Events
 function GameLog(message) {
@@ -184,50 +173,10 @@ function displayMerchantItems() {
     storyTextElement.appendChild(button);
   });
 
-  // Add button for exchanging mana cores
-  const exchangeButton = document.createElement("button");
-  exchangeButton.textContent = "Exchange Mana Cores for Gold";
-  exchangeButton.onclick = exchangeManaCore;
-  storyTextElement.appendChild(exchangeButton);
-
   const leaveButton = document.createElement("button");
   leaveButton.textContent = "Leave";
   leaveButton.onclick = () => continueJourney();
   storyTextElement.appendChild(leaveButton);
-}
-
-// Exchange Mana Cores for Gold
-function exchangeManaCore() {
-  const exchangeRate = 10; // Example rate: 1 mana core = 10 gold
-  const manaCore = gameState.player.manaCore || 0;
-
-  if (manaCore > 0) {
-    const goldEarned = manaCore * exchangeRate;
-    gameState.player.gold += goldEarned;
-    gameState.player.manaCore = 0;
-
-    GameLog(`You exchanged ${manaCore} mana core for ${goldEarned} gold.`);
-    PlayerStats(); // Update player stats display
-  }
-  else {
-    GameLog("You don't have any mana cores to exchange.");
-  }
-}
-
-
-function ExchangeItem(gold) {
-  if (gameState.inventory.manaCore > 0) {
-    gameState.inventory.manaCore -= gameState.player.gold;
-
-    if (item.effect.hp) {
-      gameState.player.hp = Math.min(gameState.player.hp + item.effect.hp, gameState.player.maxHp);
-    }
-    GameLog(`You exchanged ${item.name}. ${item.description}`);
-    inventory();
-  }
-  else {
-    GameLog(`You don't have any Mana core to exchange.`);
-  }
 }
 
 function character(){
@@ -404,13 +353,14 @@ function riddle2() {
   });
 }
 
+
 function riddle3() {
   StoryText("The next question is The more you take from me, the bigger I get. What am I?", () => {
     addChoiceButtons(["Memory", "Hole", "Mountain", "Puzzle"], (choice) => {
-      if (choice.toLowerCase() === "hole") { // Case-insensitive check
+      if (choice.toLowerCase() === "keyboard") { // Case-insensitive check
         yaySoundEffect();
         GameLog("Correct! Moving on to the next riddle.");
-        riddle4();
+        riddle3();
       } 
       else {
         GameLog("Wrong answer! Try again.");
@@ -420,10 +370,11 @@ function riddle3() {
   });
 }
 
+
 function riddle4() {
   StoryText("Good job you did well so far, the last question is What has one eye but can’t see?", () => {
     addChoiceButtons(["Cyclops", "Storm", "Mirror", "Needle"], (choice) => {
-      if (choice.toLowerCase() === "needle") { // Case-insensitive check
+      if (choice.toLowerCase() === "needle") {
         yaySoundEffect();
         GameLog("Correct! Moving on to the next riddle.");
         gotTheKey();
