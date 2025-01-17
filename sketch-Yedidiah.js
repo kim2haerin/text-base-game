@@ -141,7 +141,8 @@ function addChoiceButtons(choices, callback) {
   choices.forEach((choice) => {
     const button = document.createElement("button");
     button.textContent = choice;
-    button.onclick = () => {
+    //button.onclick = () => {
+    button.mouseClick = () =>{
       storyTextElement.innerHTML = "";
       callback(choice);
     };
