@@ -4,7 +4,7 @@ let gameState = {
     name: "Hero",
     hp: 150,
     maxHp: 500,
-    manaCore: 0,
+    HealthPotion: 0,
     gold: 20,
     weapon: "fist"
   },
@@ -15,7 +15,7 @@ let gameState = {
     Golem: { hp: 100, maxHp: 70, damage: 3, reward: 50 },
     Minataur: { hp: 150, maxHp: 150, damage: 3, reward: 100 },
   },
-  inventory: {
+  inventory:{
     HealthPotion: 0,
   },
 };
@@ -378,10 +378,10 @@ function riddle2() {
 function riddle3() {
   StoryText("The next question is The more you take from me, the bigger I get. What am I?", () => {
     addChoiceButtons(["Memory", "Hole", "Mountain", "Puzzle"], (choice) => {
-      if (choice.toLowerCase() === "keyboard") { // Case-insensitive check
+      if (choice.toLowerCase() === "hole") { // Case-insensitive check
         yaySoundEffect();
         GameLog("Correct! Moving on to the next riddle.");
-        riddle3();
+        riddle4();
       } 
       else {
         GameLog("Wrong answer! Try again.");
@@ -431,9 +431,9 @@ function demonDog(){
       gameState.player.gold += 10;
       StoryText("You defeated the the demon dog. you see something shining in the stomach of it.", () => {
         addChoiceButtons(["Collect it", "Next"], (choice) => {
-          if (choice.toLowerCase() === "collect it") { // Case-insensitive check
+          if (choice.toLowerCase() === "collect it") { // Case-insensitive check 
+            GameLog("You have collected a mana core, you can sell it for 100 Gold coins.");
             gameState.player.gold += 100;
-            GameLog("You have collected a mana core, you can sell it for 35 Gold coins.");
             Knight();
           } 
           else {
@@ -557,9 +557,6 @@ function goHelp(){
 function secondMerchant() {
   StoryText("Merchand: Hello dear adventure, What would you like to buy?", () => {
     displayMerchantItems();
-    addChoiceButtons(["Next"], () => {
-      fithingTheGolem();
-    });
   });
 }
 
@@ -642,10 +639,19 @@ function reunion(){
 }
 
 function theEnd(){
-  StoryText("as you get out of the cave you see the knight with other knights, seems like the rescue team", () =>{
+  StoryText("as you get out of the cave you see the knight with other knights, seems like the rescue team.", () =>{
     addChoiceButtons(["Next"],()=>{
+      StoryText ("You past the guys to them to priest to heath him.", () =>{
+        addChoiceButtons (["Next"],()=>{
+          StoryText ("Knight: thank you for your help, we will not forget your kindness, we have send high level knights to take care of it, i hope we will be able to crosse pathes in the future.", () =>{
+            addChoiceButtons (["Next"],()=>{
+              StoryText ("Thank you for playing this game adventure, May you come across more exciting events.");
+            });
+          });
+        });
+      });
     });
-  });  
+  });
 }
 
 
