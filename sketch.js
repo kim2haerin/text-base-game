@@ -185,6 +185,27 @@ function character(){
 }
 //document.getElementById("character").onclick = character;
 
+
+// Purchase Items from Merchant
+function purchaseItem(item) {
+  if (gameState.player.gold >= item.price) {
+    gameState.player.gold -= item.price;
+
+    if (item.effect.hp) {
+      gameState.player.hp = Math.min(gameState.player.hp + item.effect.hp, gameState.player.maxHp);
+    }
+    if (item.effect.weapon) {
+      gameState.player.weapon = item.effect.weapon;
+    }
+
+    GameLog(`You bought ${item.name}. ${item.description}`);
+    PlayerStats();
+  }
+  else {
+    GameLog("You don't have enough gold to buy ${item.name");
+  }
+}
+
 // Start the Game
 function startGame() {
   playBackgroundMusic();
@@ -584,8 +605,47 @@ function TheApprentice(){
 
 function wakeUp(){
   StoryText("After what felt like an eternity, he finally woke up",() =>{
-    
+    addChoiceButtons(["Next"], () => {
+      StoryText("You help him stand up and inform him that his companion is waitin for him, make sure to make it out alive.", () =>{
+        addChoiceButtons(["Next"],()=>{
+          const randomMonster = {
+            name: "Mage goblin",
+            hp: 85,
+            damage: 20,
+          };
+      
+          startBattle(randomMonster, () => {
+            StoryText("You defeated the Mage goblin but there is still 2 other monster ahead.",
+              () => {
+                startBattle(gameState.enemies.slime, () => {
+                  StoryText("One left", () =>{
+                    startBattle(gameState.enemies.slime, () =>{
+                      gameState.player.gold += 85;
+                      reunion();
+                    });
+                  });
+                });
+              });
+          });
+        });
+      });
+    });   
   });
+}
+
+function reunion(){
+  StoryText("as you get out of the cave you see the knight with other knights, seems like the rescue team", () =>{
+    addChoiceButtons(["Next"],()=>{
+      theEnd();
+    });
+  });
+}
+
+function theEnd(){
+  StoryText("as you get out of the cave you see the knight with other knights, seems like the rescue team", () =>{
+    addChoiceButtons(["Next"],()=>{
+    });
+  });  
 }
 
 
