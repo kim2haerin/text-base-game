@@ -192,7 +192,7 @@ function displayMerchantItems2() {
 
   const leaveButton = document.createElement("button");
   leaveButton.textContent = "Leave";
-  leaveButton.onclick = () => continueJourney();
+  leaveButton.onclick = () => fithingTheGolem();
   storyTextElement.appendChild(leaveButton);
 }
 
