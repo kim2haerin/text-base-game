@@ -13,3 +13,4 @@
 
 ## Were there any problems I could not solve?
 - making another body in index for the gasha machine but if i has a little bit of time maybe i would have solve it. 
+- I wanted to put some image next to the product's name in the merchant part.

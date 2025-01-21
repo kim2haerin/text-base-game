@@ -9,7 +9,7 @@ let gameState = {
     weapon: "fist"
   },
   enemies: {
-    goblin: { hp: 100, maxHp: 100, damage: 5},
+    goblin: { hp: 50, maxHp: 50, damage: 5},
     demonDog: { hp: 150, maxHp: 150, damage: 5},
     slime: { hp: 50, maxHp: 50, damage: 5},
     Golem: { hp: 100, maxHp: 70, damage: 3},
@@ -284,7 +284,7 @@ function rightPath() {
 function meetMerchant1() {
   StoryText("You meet a friendly merchant. He offers you items for sale. What would you like to buy?",() =>{
     displayMerchantItems1();
-});
+  });
 }
 
 
@@ -450,19 +450,21 @@ function demonDog() {
       name: "Demon Wolf",
       hp: 50,
       damage: 10,
-      goldReward: 10 // Gold earned upon defeating the enemy
     };
 
     startBattle(demonWolf, () => {
-      gameState.player.gold += demonWolf.goldReward;
+      ;
       StoryText(
         "You defeated the demon wolf. You see something shining in its stomach.", 
         () => {
           addChoiceButtons(["Collect it", "Next"], (choice) => {
             if (choice.toLowerCase() === "collect it") { // Case-insensitive input handling
-              GameLog("You have collected a mana core. You can sell it for 100 Gold coins.");  
-              gameState.player.gold += 100;  
-              StoryText("You've safely collected the mana core.", Knight);
+              gameState.player.gold += 100;
+              GameLog("You have collected a mana core. You can sell it for 100 Gold coins."); 
+              //playerState();
+              addChoiceButtons(["Next"], ()=>{
+                Knight();
+              });  
             } 
             else {
               GameLog("You chose to move on.");
@@ -498,7 +500,7 @@ function Knight() {
                     );
                   });
                   addChoiceButtons(["Next"], ()=>{
-                    Knight();
+                    goHelp();
                   });
                 }
                 else {
@@ -527,7 +529,6 @@ function findIngredients() {
         name: "Cave Beast",
         hp: 60,
         damage: 15,
-        reward: 10,
       };
   
       startBattle(randomMonster, () => {
@@ -574,7 +575,7 @@ function returnToKnight() {
 }
   
 function goHelp(){
-  StoryText("I didn't came here alone, there are two peoples that continued ahead, please bring them back here, it's to dagerouse to continue.", () => {
+  StoryText("I didn't came here alone, there are two peoples that continued ahead, please bring them back here, it's to dangerous to continue.", () => {
     addChoiceButtons(["Next"], () => {
       secondMerchant();
     });
@@ -588,29 +589,28 @@ function secondMerchant() {
 }
 
 function fithingTheGolem(){
-  StoryText("You venture deeper into the cave to look for the ingredients. Suddenly, a monster appears!",
-    () => {
-      // Start a battle with a crystal golem
-      const crystalGolem = {
-        name: "crystal Golem",
-        hp: 100,
-        damage: 10,
-      };
+  // Start a battle with a crystal golem
+  const crystalGolem = {
+    name: "crystal Golem",
+    hp: 100,
+    damage: 10,
+  };
   
-      startBattle(crystalGolem, () => {
-        StoryText("You see a crystal Golem in front of you and there's someone bleeding and in terrible shape on the ground, help him.",
-          () => {
-            GameLog("You obtained 100 gold.");
-            playerState();
-            addChoiceButtons(["Next"], () => {
-              TheApprentice();
-            });            
-          }
-        );
-      });
-    }
-  );
+  startBattle(crystalGolem, () => {
+    StoryText("You see a crystal Golem in front of you and there's someone bleeding and in terrible shape on the ground, help him.",
+      () => {
+        GameLog("You obtained 100 gold.");
+        gameState.player.gold += 100;
+        //playerState();
+        addChoiceButtons(["Next"], () => {
+          TheApprentice();
+        });            
+      }
+    );
+  });
 }
+
+
 
 function TheApprentice(){
   StoryText("You run to him, he was wearing the knight uniform and armor so that most be the companion of the previous knight",
@@ -630,7 +630,7 @@ function TheApprentice(){
 function wakeUp(){
   StoryText("After what felt like an eternity, he finally woke up",() =>{
     addChoiceButtons(["Next"], () => {
-      StoryText("You help him stand up and inform him that his companion is waitin for him, make sure to make it out alive.", () =>{
+      StoryText("You help him stand up and inform him that his companion is waitin for him, make sure to make it out alive so be ready to fight the monster ahead.", () =>{
         addChoiceButtons(["Next"],()=>{
           const randomMonster = {
             name: "Mage goblin",
@@ -658,7 +658,7 @@ function wakeUp(){
 }
 
 function reunion(){
-  StoryText("as you get out of the cave you see the knight with other knights, seems like the rescue team", () =>{
+  StoryText("As you get out of the cave you see the knight with other knights, seems like the rescue team", () =>{
     addChoiceButtons(["Next"],()=>{
       theEnd();
     });
@@ -666,11 +666,11 @@ function reunion(){
 }
 
 function theEnd(){
-  StoryText("as you get out of the cave you see the knight with other knights, seems like the rescue team.", () =>{
+  StoryText("As you get out of the cave you see the knight with other knights, seems like the rescue team.", () =>{
     addChoiceButtons(["Next"],()=>{
       StoryText ("You past the guys to them to priest to heath him.", () =>{
         addChoiceButtons (["Next"],()=>{
-          StoryText ("Knight: thank you for your help, we will not forget your kindness, we have send high level knights to take care of it, i hope we will be able to crosse pathes in the future.", () =>{
+          StoryText ("Knight: thank you for your help, we will not forget your kindness, we have send high level knights to take care of it, i hope we will be able to cross paths in the future.", () =>{
             addChoiceButtons (["Next"],()=>{
               StoryText ("Thank you for playing this game adventure, May you come across more exciting events.");
             });
