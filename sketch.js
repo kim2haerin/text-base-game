@@ -9,11 +9,11 @@ let gameState = {
     weapon: "fist"
   },
   enemies: {
-    goblin: { hp: 100, maxHp: 100, damage: 5, reward: 30 },
-    demonDog: { hp: 150, maxHp: 150, damage: 5, reward: 45 },
-    slime: { hp: 50, maxHp: 50, damage: 5, reward: 20 },
-    Golem: { hp: 100, maxHp: 70, damage: 3, reward: 50 },
-    Minataur: { hp: 150, maxHp: 150, damage: 3, reward: 100 },
+    goblin: { hp: 100, maxHp: 100, damage: 5},
+    demonDog: { hp: 150, maxHp: 150, damage: 5},
+    slime: { hp: 50, maxHp: 50, damage: 5},
+    Golem: { hp: 100, maxHp: 70, damage: 3},
+    Minataur: { hp: 150, maxHp: 150, damage: 3 },
   },
   inventory:{
     HealthPotion: 0,
@@ -83,6 +83,7 @@ function yaySoundEffect(){
     lost.play();
   }
 }
+
 
 // Battle Logic
 function startBattle(enemy, onVictory) {
@@ -163,7 +164,23 @@ function StoryText(text, callback) {
   }, 50);
 }
 
-function displayMerchantItems() {
+function displayMerchantItems1() {
+  storyTextElement.innerHTML += "<br><br><strong>Items for Sale:</strong><br>";
+
+  merchantItems.forEach((item) => {
+    const button = document.createElement("button");
+    button.textContent = `${item.name} - ${item.price} gold`;
+    button.onclick = () => purchaseItem(item);
+    storyTextElement.appendChild(button);
+  });
+
+  const leaveButton = document.createElement("button");
+  leaveButton.textContent = "Leave";
+  leaveButton.onclick = () => continueJourney();
+  storyTextElement.appendChild(leaveButton);
+}
+
+function displayMerchantItems2() {
   storyTextElement.innerHTML += "<br><br><strong>Items for Sale:</strong><br>";
 
   merchantItems.forEach((item) => {
@@ -242,7 +259,7 @@ function leftPath() {
     GameLog("You earned 100 gold!");
     PlayerStats();
     addChoiceButtons(["Next"], ()=>{
-      meetMerchant();
+      meetMerchant1();
     });
   });
 }
@@ -256,7 +273,7 @@ function rightPath() {
         GameLog("You earned 20 gold!");
         PlayerStats();
         addChoiceButtons(["Next"], ()=>{
-          meetMerchant();
+          meetMerchant1();
         });
       });
     });
@@ -264,11 +281,12 @@ function rightPath() {
 }
 
 // Merchant Interaction
-function meetMerchant() {
-  StoryText("You meet a friendly merchant. He offers you items for sale. What would you like to buy?", () => {
-    displayMerchantItems();
-  });
+function meetMerchant1() {
+  StoryText("You meet a friendly merchant. He offers you items for sale. What would you like to buy?",() =>{
+    displayMerchantItems1();
+});
 }
+
 
 // Continue Journey
 function continueJourney() {
@@ -425,25 +443,34 @@ function toTheDoor(){
   });
 }
 
-function demonDog(){
-  StoryText("As you enter There was a demon wolf in front of you", () => {
-    startBattle(gameState.enemies.goblin, () => {
-      gameState.player.gold += 10;
-      StoryText("You defeated the the demon dog. you see something shining in the stomach of it.", () => {
-        addChoiceButtons(["Collect it", "Next"], (choice) => {
-          if (choice.toLowerCase() === "collect it") { // Case-insensitive check 
-            GameLog("You have collected a mana core, you can sell it for 100 Gold coins.");
-            gameState.player.gold += 100;
-            Knight();
-          } 
-          else {
-            GameLog("Let's continue then");
-            addChoiceButtons(["Next"], ()=>{
+function demonDog() {
+  StoryText("As you enter, there is a demon wolf growling in front of you.", () => {
+    // Define the Demon Wolf enemy for this battle
+    const demonWolf = {
+      name: "Demon Wolf",
+      hp: 50,
+      damage: 10,
+      goldReward: 10 // Gold earned upon defeating the enemy
+    };
+
+    startBattle(demonWolf, () => {
+      gameState.player.gold += demonWolf.goldReward;
+      StoryText(
+        "You defeated the demon wolf. You see something shining in its stomach.", 
+        () => {
+          addChoiceButtons(["Collect it", "Next"], (choice) => {
+            if (choice.toLowerCase() === "collect it") { // Case-insensitive input handling
+              GameLog("You have collected a mana core. You can sell it for 100 Gold coins.");  
+              gameState.player.gold += 100;  
+              StoryText("You've safely collected the mana core.", Knight);
+            } 
+            else {
+              GameLog("You chose to move on.");
               Knight();
-            });
-          }
-        });
-      });
+            }
+          });
+        }
+      );
     });
   });
 }
@@ -556,7 +583,7 @@ function goHelp(){
 
 function secondMerchant() {
   StoryText("Merchand: Hello dear adventure, What would you like to buy?", () => {
-    displayMerchantItems();
+    displayMerchantItems2();
   });
 }
 
